@@ -1,4 +1,4 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { ButtonHTMLAttributes, Dispatch, HTMLAttributes, ReactNode, SetStateAction } from 'react';
 
 export type ChatbotMode = 'faq' | 'adapter';
 
@@ -62,6 +62,8 @@ export interface ChatBotClassNames {
   header?: string;
   title?: string;
   messages?: string;
+  faqOptions?: string;
+  faqOptionButton?: string;
   message?: string;
   userMessage?: string;
   botMessage?: string;
@@ -71,6 +73,14 @@ export interface ChatBotClassNames {
   loading?: string;
   error?: string;
   empty?: string;
+}
+
+export interface ChatBotWidgetClassNames {
+  root?: string;
+  launcher?: string;
+  panel?: string;
+  closeButton?: string;
+  chatBot?: string;
 }
 
 export interface ChatBotBaseProps {
@@ -85,6 +95,8 @@ export interface ChatBotBaseProps {
   loadingLabel?: string;
   errorLabel?: string;
   sendLabel?: string;
+  showFaqOptions?: boolean;
+  faqOptionsLabel?: string;
   onMessagesChange?: (messages: ChatMessage[]) => void;
   onError?: (error: Error) => void;
 }
@@ -105,7 +117,35 @@ export interface AdapterModeOptions {
   faqResolver?: never;
 }
 
-export type ChatBotProps = ChatBotBaseProps & (FaqModeOptions | AdapterModeOptions);
+export type ChatBotProps = ChatBotBaseProps & {
+  children?: ReactNode;
+} & (FaqModeOptions | AdapterModeOptions);
+
+export interface ChatBotWidgetBaseProps extends Omit<ChatBotBaseProps, 'className'> {
+  defaultOpen?: boolean;
+  draggable?: boolean;
+  launcherLabel?: string;
+  closeLabel?: string;
+  launcherIcon?: ReactNode;
+  className?: string;
+  widgetClassNames?: ChatBotWidgetClassNames;
+}
+
+export type ChatBotWidgetProps = ChatBotWidgetBaseProps & (FaqModeOptions | AdapterModeOptions);
+
+export type ChatBotWidgetRootProps = ChatBotWidgetProps & {
+  children: ReactNode;
+};
+
+export type ChatBotWidgetLauncherProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
+
+export type ChatBotWidgetPanelProps = HTMLAttributes<HTMLDivElement>;
+
+export type ChatBotWidgetCloseButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
+
+export type ChatBotWidgetChatBotProps = Pick<ChatBotBaseProps, 'className' | 'classNames'> & {
+  children?: ReactNode;
+};
 
 export type UseChatbotOptions = Pick<
   ChatBotBaseProps,

@@ -63,27 +63,62 @@
 
 ## 9. Floating Widget Launcher
 
-- [ ] 9.1 Define `ChatBotWidget` public props, including `draggable`, launcher labels, default open state, and widget class customization hooks.
-- [ ] 9.2 Implement a lower-right floating launcher bubble that opens the chat panel when activated.
-- [ ] 9.3 Implement close/minimize behavior that hides the chat panel and keeps the launcher available.
-- [ ] 9.4 Reuse the existing `ChatBot` panel inside `ChatBotWidget` so FAQ and adapter modes behave consistently.
-- [ ] 9.5 Implement optional draggable launcher behavior controlled by the `draggable` prop.
-- [ ] 9.6 Constrain draggable launcher positioning to the visible viewport.
-- [ ] 9.7 Prevent drag interactions from accidentally opening the chat panel by distinguishing click versus drag behavior.
-- [ ] 9.8 Add Tailwind-based default widget styling and customization-friendly class props for the launcher, widget shell, and controls.
-- [ ] 9.9 Add tests for fixed launcher rendering, open/close behavior, draggable behavior, viewport constraints, and click-versus-drag behavior.
+- [x] 9.1 Define `ChatBotWidget` public props, including `draggable`, launcher labels, default open state, and widget class customization hooks.
+- [x] 9.2 Implement a lower-right floating launcher bubble that opens the chat panel when activated.
+- [x] 9.3 Implement close/minimize behavior that hides the chat panel and keeps the launcher available.
+- [x] 9.4 Reuse the existing `ChatBot` panel inside `ChatBotWidget` so FAQ and adapter modes behave consistently.
+- [x] 9.5 Implement optional draggable launcher behavior controlled by the `draggable` prop.
+- [x] 9.6 Constrain draggable launcher positioning to the visible viewport.
+- [x] 9.7 Prevent drag interactions from accidentally opening the chat panel by distinguishing click versus drag behavior.
+- [x] 9.8 Add Tailwind-based default widget styling and customization-friendly class props for the launcher, widget shell, and controls.
+- [x] 9.9 Add tests for fixed launcher rendering, open/close behavior, draggable behavior, viewport constraints, and click-versus-drag behavior.
 
 ## 10. Showcase Page
 
 - [ ] 10.1 Create a lightweight showcase page using the Vite examples app.
 - [ ] 10.2 Add showcase sections for embedded FAQ chatbot and embedded adapter chatbot.
-- [ ] 10.3 Add showcase sections for fixed floating widget and draggable floating widget.
-- [ ] 10.4 Update documentation to explain the showcase page and widget usage examples.
-- [ ] 10.5 Verify the showcase examples compile against the public package API.
+- [x] 10.3 Add showcase sections for fixed floating widget and draggable floating widget.
+- [x] 10.4 Update documentation to explain the showcase page and widget usage examples.
+- [x] 10.5 Verify the showcase examples compile against the public package API.
 
 ## 11. Follow-up Verification
 
-- [ ] 11.1 Run `npm run typecheck` after widget and showcase updates.
-- [ ] 11.2 Run `npm test` after widget and showcase updates.
-- [ ] 11.3 Run `npm run build` after widget and showcase updates.
-- [ ] 11.4 Review package exports to ensure `ChatBotWidget` and widget-related types are exposed intentionally.
+- [x] 11.1 Run `npm run typecheck` after widget and showcase updates.
+- [x] 11.2 Run `npm test` after widget and showcase updates.
+- [x] 11.3 Run `npm run build` after widget and showcase updates.
+- [x] 11.4 Review package exports to ensure `ChatBotWidget` and widget-related types are exposed intentionally.
+
+## 12. ChatBotWidget Composition and Hook Refactor
+
+- [x] 12.1 Extract widget state, positioning, and draggable pointer behavior into `useChatBotWidget`.
+- [x] 12.2 Add a widget context so compound components can share open/close state, styles, handlers, and chat props.
+- [x] 12.3 Implement compound components: `ChatBotWidget.Root`, `ChatBotWidget.Launcher`, `ChatBotWidget.Panel`, `ChatBotWidget.CloseButton`, and `ChatBotWidget.ChatBot`.
+- [x] 12.4 Rebuild the existing `<ChatBotWidget />` preset using the compound components while preserving current props.
+- [x] 12.5 Add or update public types and exports for composed widget usage.
+- [x] 12.6 Add a custom-designed composed widget demo using `className`, `classNames`, and custom children.
+- [x] 12.7 Add tests for default widget behavior and custom composed widget behavior.
+- [x] 12.8 Update documentation for simple widget and composed widget usage.
+- [x] 12.9 Run `npm run typecheck`, `npm test`, and `npm run build`.
+
+## 13. ChatBot Compound Component API
+
+- [x] 13.1 Add `ChatBot.Root` as the behavior owner for `faq` and `adapter` mode props.
+- [x] 13.2 Add `ChatBot` context for messages, loading state, error state, labels, input state, and submit behavior.
+- [x] 13.3 Implement compound components: `Header`, `Title`, `Messages`, `MessageItem`, `Empty`, `Loading`, `Error`, `Composer`, `Input`, and `SubmitButton`.
+- [x] 13.4 Support function-as-children render props in `ChatBot.Messages` for per-message customization.
+- [x] 13.5 Rebuild the existing `<ChatBot />` preset using compound components while preserving backward compatibility.
+- [x] 13.6 Update `ChatBotWidget.ChatBot` so it accepts custom `ChatBot` children and bridges widget mode props into `ChatBot.Root`.
+- [x] 13.7 Add extensive demos and documentation for customizing each component slot.
+- [x] 13.8 Add tests for custom submit button icon, custom messages, custom header, and widget bridge usage.
+- [x] 13.9 Run `npm run typecheck`, `npm test`, and `npm run build`.
+
+## 14. Future Developer Tooling for Compound Component Safety
+
+- [ ] 14.1 Research feasibility of an ESLint rule that detects `ChatBot.*` slots rendered outside `ChatBot.Root` or `ChatBotWidget.ChatBot`.
+- [ ] 14.2 Define invalid nesting cases the rule should catch, such as `ChatBot.Header` directly inside `ChatBotWidget.Panel`.
+- [ ] 14.3 Define valid nesting cases the rule should allow, including embedded `ChatBot.Root` usage and widget `ChatBotWidget.ChatBot` bridging usage.
+- [ ] 14.4 Decide whether the package should ship an ESLint plugin, an ESLint config, or only documentation for now.
+- [ ] 14.5 Investigate support for import aliases, such as `import { ChatBot as Bot }`, so linting works with renamed components.
+- [ ] 14.6 Consider a scoped render-function API as an optional alternative or complement to ESLint-based validation.
+- [ ] 14.7 Document the trade-off between runtime guards, TypeScript limitations, and custom lint tooling.
+- [ ] 14.8 Add examples/tests for any selected developer tooling approach before implementation.

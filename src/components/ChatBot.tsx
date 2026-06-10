@@ -2,6 +2,8 @@ import {
   Fragment,
   createContext,
   useContext,
+  useEffect,
+  useRef,
   useState,
   type ButtonHTMLAttributes,
   type ComponentType,
@@ -16,6 +18,13 @@ import type { ChatBotClassNames, ChatBotProps, ChatMessage, FaqItem, UseChatbotR
 import { cn } from '../utils/cn';
 
 type MessageRenderer = (message: ChatMessage) => ReactNode;
+export type ChatBotNewMessageIndicatorState = {
+  unreadCount: number;
+  latestMessage: ChatMessage | null;
+  isUserNearBottom: boolean;
+  scrollToBottom: () => void;
+};
+type NewMessageIndicatorRenderer = (state: ChatBotNewMessageIndicatorState) => ReactNode;
 export type ChatBotFaqOptionButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
   [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
 };
@@ -32,6 +41,7 @@ export type ChatBotHeaderProps = HTMLAttributes<HTMLElement>;
 export type ChatBotTitleProps = HTMLAttributes<HTMLHeadingElement>;
 export type ChatBotMessagesProps = Omit<HTMLAttributes<HTMLUListElement | HTMLDivElement>, 'children'> & {
   children?: MessageRenderer;
+  newMessageIndicator?: ReactNode | NewMessageIndicatorRenderer;
 };
 export type ChatBotFaqOptionsProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
   children?: FaqOptionRenderer;
@@ -94,6 +104,35 @@ function useChatBotContext(componentName: string) {
   }
 
   return context;
+}
+
+function scrollNearestContainerToBottom(element: HTMLElement | null) {
+  const container = getNearestScrollableContainer(element);
+
+  if (container) {
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+function getNearestScrollableContainer(element: HTMLElement | null) {
+  let current = element?.parentElement ?? null;
+
+  while (current) {
+    const { overflowY } = window.getComputedStyle(current);
+    const canScrollY = overflowY === 'auto' || overflowY === 'scroll';
+
+    if (canScrollY) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
+function isNearScrollBottom(element: HTMLElement) {
+  return element.scrollHeight - element.scrollTop - element.clientHeight < 48;
 }
 
 function ChatBotRoot(props: ChatBotRootProps) {
@@ -181,18 +220,115 @@ function ChatBotTitle({ children, className, ...titleProps }: ChatBotTitleProps)
   );
 }
 
-function ChatBotMessages({ children, className, ...containerProps }: ChatBotMessagesProps) {
+function ChatBotMessages({ children, className, newMessageIndicator, ...containerProps }: ChatBotMessagesProps) {
   const { messages, classNames } = useChatBotContext('ChatBot.Messages');
+  const listRef = useRef<HTMLUListElement | null>(null);
+  const endRef = useRef<HTMLLIElement | null>(null);
+  const previousMessageCountRef = useRef(messages.length);
+  const wasNearBottomRef = useRef(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [latestUnreadMessage, setLatestUnreadMessage] = useState<ChatMessage | null>(null);
+
+  useEffect(() => {
+    const container = getNearestScrollableContainer(endRef.current ?? listRef.current);
+
+    if (!container) {
+      return;
+    }
+
+    const updateNearBottom = () => {
+      const isNearBottom = isNearScrollBottom(container);
+      wasNearBottomRef.current = isNearBottom;
+
+      if (isNearBottom) {
+        setUnreadCount(0);
+        setLatestUnreadMessage(null);
+      }
+    };
+
+    updateNearBottom();
+    container.addEventListener('scroll', updateNearBottom, { passive: true });
+
+    return () => container.removeEventListener('scroll', updateNearBottom);
+  }, [messages.length]);
+
+  useEffect(() => {
+    const previousMessageCount = previousMessageCountRef.current;
+    const hasNewMessage = messages.length > previousMessageCount;
+    previousMessageCountRef.current = messages.length;
+
+    if (!hasNewMessage) {
+      return;
+    }
+
+    const latestMessage = messages[messages.length - 1];
+
+    if (latestMessage?.role === 'user') {
+      scrollNearestContainerToBottom(endRef.current);
+      wasNearBottomRef.current = true;
+      setUnreadCount(0);
+      setLatestUnreadMessage(null);
+      return;
+    }
+
+    if (wasNearBottomRef.current) {
+      scrollNearestContainerToBottom(endRef.current);
+      setUnreadCount(0);
+      setLatestUnreadMessage(null);
+      return;
+    }
+
+    setUnreadCount((current) => current + 1);
+    setLatestUnreadMessage(latestMessage ?? null);
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    scrollNearestContainerToBottom(endRef.current);
+    wasNearBottomRef.current = true;
+    setUnreadCount(0);
+    setLatestUnreadMessage(null);
+  };
+
+  const indicatorState = {
+    unreadCount,
+    latestMessage: latestUnreadMessage,
+    isUserNearBottom: wasNearBottomRef.current,
+    scrollToBottom,
+  } satisfies ChatBotNewMessageIndicatorState;
+
+  const resolvedNewMessageIndicator =
+    typeof newMessageIndicator === 'function' ? newMessageIndicator(indicatorState) : newMessageIndicator;
 
   if (messages.length === 0) {
     return <ChatBotEmpty className={className} {...(containerProps as HTMLAttributes<HTMLDivElement>)} />;
   }
 
   return (
-    <ul {...(containerProps as HTMLAttributes<HTMLUListElement>)} className={cn('flex flex-1 flex-col gap-3 overflow-y-auto p-4', classNames?.messages, className)}>
+    <ul
+      {...(containerProps as HTMLAttributes<HTMLUListElement>)}
+      ref={listRef}
+      className={cn('flex flex-1 flex-col gap-3 overflow-y-auto p-4', classNames?.messages, className)}
+    >
       {messages.map((message) =>
         children ? <Fragment key={message.id}>{children(message)}</Fragment> : <ChatBotMessageItem key={message.id} message={message} />,
       )}
+      {unreadCount > 0 && (
+        <li className="sticky bottom-0 z-10 flex justify-center" aria-live="polite">
+          {resolvedNewMessageIndicator ?? (
+            <button
+              type="button"
+              className={cn(
+                'rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white shadow-lg transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2',
+                classNames?.newMessageIndicator,
+              )}
+              onClick={scrollToBottom}
+            >
+              ↓
+            </button>
+          )}
+        </li>
+      )}
+      <li ref={endRef} aria-hidden="true" className="h-px shrink-0" />
     </ul>
   );
 }
@@ -215,7 +351,7 @@ function ChatBotFaqOptions({ children, className, label, ...containerProps }: Ch
       {...containerProps}
       className={cn('border-t border-slate-200 bg-white px-4 py-3', classNames?.faqOptions, className)}
     >
-      {resolvedLabel && <p className="mb-2 text-xs font-medium text-slate-500">{resolvedLabel}</p>}
+      {label && <p className="mb-2 text-xs font-medium text-slate-500">{resolvedLabel}</p>}
       <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-color:theme(colors.slate.300)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
         {faqItems.map((item, index) => {
           const submit = () => void submitMessage(item.question);
@@ -285,13 +421,20 @@ function ChatBotEmpty({ children, className, ...divProps }: ChatBotStateProps) {
 
 function ChatBotLoading({ children, className, ...divProps }: ChatBotStateProps) {
   const { isLoading, loadingLabel, classNames } = useChatBotContext('ChatBot.Loading');
+  const loadingRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (isLoading) {
+      scrollNearestContainerToBottom(loadingRef.current);
+    }
+  }, [isLoading]);
 
   if (!isLoading) {
     return null;
   }
 
   return (
-    <div {...divProps} className={cn('px-4 pb-2 text-xs text-slate-500', classNames?.loading, className)} role="status">
+    <div ref={loadingRef} {...divProps} className={cn('px-4 pb-2 text-xs text-slate-500', classNames?.loading, className)} role="status">
       {children ?? loadingLabel}
     </div>
   );

@@ -97,6 +97,8 @@ export interface ChatBotClassNames {
   title?: string;
   /** Class for the message list container. */
   messages?: string;
+  /** Class for the default new-message indicator button. */
+  newMessageIndicator?: string;
   /** Class for the FAQ option section wrapper. */
   faqOptions?: string;
   /** Class for each FAQ option button. */

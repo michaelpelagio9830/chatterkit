@@ -75,6 +75,25 @@ For custom layouts, render the badge list yourself with the compound slot:
 </ChatBot.Root>
 ```
 
+For full control over each FAQ option button, use the second render-prop argument. `getButtonProps` wires the correct `type`, disabled state, and click handler while letting you customize classes, labels, data attributes, and nested markup:
+
+```tsx
+<ChatBot.FaqOptions className="border-purple-100 bg-purple-50/80">
+  {(item, option) => (
+    <button
+      {...option.getButtonProps({
+        className:
+          'flex min-w-40 flex-col rounded-2xl border border-purple-200 bg-white px-4 py-3 text-left text-purple-950 shadow-sm hover:bg-purple-100',
+        'aria-label': `Ask about ${item.question}`,
+      })}
+    >
+      <span className="text-sm font-semibold">💬 {item.question}</span>
+      <span className="mt-1 text-xs text-purple-500">Quick question</span>
+    </button>
+  )}
+</ChatBot.FaqOptions>
+```
+
 You can also provide a custom FAQ resolver:
 
 ```tsx
@@ -178,7 +197,7 @@ Available `ChatBot` slots:
 - `ChatBot.Header` — header wrapper. Defaults to rendering `ChatBot.Title`.
 - `ChatBot.Title` — renders the configured `title` unless custom children are provided.
 - `ChatBot.Messages` — renders messages. Pass a function as children for per-message customization.
-- `ChatBot.FaqOptions` — renders FAQ items as clickable badge buttons in FAQ mode.
+- `ChatBot.FaqOptions` — renders FAQ items as clickable badge buttons in FAQ mode. Use `(item) => ...` for simple button content or `(item, option) => <button {...option.getButtonProps()}>...</button>` for fully custom buttons.
 - `ChatBot.MessageItem` — message row and bubble helper. Supports `bubbleClassName` and custom children.
 - `ChatBot.Empty` — custom empty state when there are no messages.
 - `ChatBot.Loading` — custom loading state.

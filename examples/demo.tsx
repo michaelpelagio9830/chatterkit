@@ -61,11 +61,18 @@ function Demo() {
                   </ChatBot.MessageItem>
                 )}
               </ChatBot.Messages>
-              <ChatBot.FaqOptions
-                // label="Select a topic:"
-                className="border-purple-100 bg-purple-50/80"
-              >
-                {(item) => `💬 ${item.question}`}
+              <ChatBot.FaqOptions className="border-purple-100 bg-purple-50/80">
+                {(item, option) => (
+                  <button
+                    {...option.getButtonProps({
+                      className:
+                        "flex min-w-40 flex-col rounded-2xl border border-purple-200 bg-white px-4 py-3 text-left text-purple-950 shadow-sm hover:bg-purple-100",
+                    })}
+                  >
+                    <span className="text-sm font-semibold">💬 {item.question}</span>
+                    <span className="mt-1 text-xs text-purple-500">Quick question</span>
+                  </button>
+                )}
               </ChatBot.FaqOptions>
               <ChatBot.Loading className="text-purple-500">
                 Checking the FAQ...
@@ -152,7 +159,16 @@ function Demo() {
               label="Select a topic:"
               className="border-purple-100 bg-purple-50/80"
             >
-              {(item) => `💬 ${item.question}`}
+              {(item, option) => (
+                <button
+                  {...option.getButtonProps({
+                    className:
+                      "rounded-2xl border-purple-200 bg-white px-4 py-2 text-purple-900 shadow-sm hover:bg-purple-100",
+                  })}
+                >
+                  💬 {item.question}
+                </button>
+              )}
             </ChatBot.FaqOptions>
             <ChatBot.Composer>
               <ChatBot.Input className="focus:border-purple-500 focus:ring-purple-100" />

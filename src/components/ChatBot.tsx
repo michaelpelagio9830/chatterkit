@@ -8,6 +8,7 @@ import {
   type FormEvent,
   type HTMLAttributes,
   type InputHTMLAttributes,
+  type MouseEvent,
   type ReactNode,
 } from 'react';
 import { useChatbot } from '../hooks/useChatbot';
@@ -15,6 +16,16 @@ import type { ChatBotClassNames, ChatBotProps, ChatMessage, FaqItem, UseChatbotR
 import { cn } from '../utils/cn';
 
 type MessageRenderer = (message: ChatMessage) => ReactNode;
+export type ChatBotFaqOptionButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
+};
+export type ChatBotFaqOptionRenderState = {
+  index: number;
+  disabled: boolean;
+  submit: () => void;
+  getButtonProps: (props?: ChatBotFaqOptionButtonProps) => ChatBotFaqOptionButtonProps & { type: 'button' };
+};
+type FaqOptionRenderer = (faqItem: FaqItem, state: ChatBotFaqOptionRenderState) => ReactNode;
 
 export type ChatBotRootProps = ChatBotProps;
 export type ChatBotHeaderProps = HTMLAttributes<HTMLElement>;
@@ -23,7 +34,7 @@ export type ChatBotMessagesProps = Omit<HTMLAttributes<HTMLUListElement | HTMLDi
   children?: MessageRenderer;
 };
 export type ChatBotFaqOptionsProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
-  children?: (faqItem: FaqItem) => ReactNode;
+  children?: FaqOptionRenderer;
   label?: string;
 };
 export type ChatBotMessageItemProps = HTMLAttributes<HTMLLIElement> & {
@@ -190,6 +201,10 @@ function ChatBotFaqOptions({ children, className, label, ...containerProps }: Ch
   const { faqItems = [], isFaqMode, disabled, submitMessage, faqOptionsLabel, classNames } =
     useChatBotContext('ChatBot.FaqOptions');
   const resolvedLabel = label ?? faqOptionsLabel;
+  const defaultButtonClassName = cn(
+    'shrink-0 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60',
+    classNames?.faqOptionButton,
+  );
 
   if (!isFaqMode || faqItems.length === 0) {
     return null;
@@ -202,20 +217,31 @@ function ChatBotFaqOptions({ children, className, label, ...containerProps }: Ch
     >
       {resolvedLabel && <p className="mb-2 text-xs font-medium text-slate-500">{resolvedLabel}</p>}
       <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-color:theme(colors.slate.300)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
-        {faqItems.map((item) => (
-          <button
-            key={item.id ?? item.question}
-            type="button"
-            className={cn(
-              'shrink-0 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60',
-              classNames?.faqOptionButton,
-            )}
-            disabled={disabled}
-            onClick={() => void submitMessage(item.question)}
-          >
-            {children ? children(item) : item.question}
-          </button>
-        ))}
+        {faqItems.map((item, index) => {
+          const submit = () => void submitMessage(item.question);
+          const getButtonProps = ({ className: buttonClassName, onClick, disabled: buttonDisabled, ...buttonProps }: ChatBotFaqOptionButtonProps = {}) => ({
+            ...buttonProps,
+            type: 'button' as const,
+            className: cn(defaultButtonClassName, buttonClassName),
+            disabled: buttonDisabled ?? disabled,
+            onClick: (event: MouseEvent<HTMLButtonElement>) => {
+              onClick?.(event);
+
+              if (!event.defaultPrevented) {
+                submit();
+              }
+            },
+          });
+          const renderState = { index, disabled, submit, getButtonProps } satisfies ChatBotFaqOptionRenderState;
+
+          return children && children.length >= 2 ? (
+            <Fragment key={item.id ?? item.question}>{children(item, renderState)}</Fragment>
+          ) : (
+            <button key={item.id ?? item.question} {...getButtonProps()}>
+              {children ? children(item, renderState) : item.question}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

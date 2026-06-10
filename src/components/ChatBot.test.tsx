@@ -91,6 +91,36 @@ describe('ChatBot', () => {
     expect(screen.getByTestId('icon-bot')).toHaveTextContent('🤖');
   });
 
+  it('supports fully custom FAQ option buttons with helper props', async () => {
+    render(
+      <ChatBot.Root mode="faq" title="Custom options bot" faqItems={[{ question: 'Billing', answer: 'Billing help is available.' }]}>
+        <ChatBot.Messages />
+        <ChatBot.FaqOptions label="Custom options">
+          {(item, option) => (
+            <button
+              {...option.getButtonProps({
+                className: 'custom-faq-button',
+                'aria-label': `Ask about ${item.question}`,
+                'data-index': option.index,
+              })}
+            >
+              <span>💬</span>
+              <span>{item.question}</span>
+            </button>
+          )}
+        </ChatBot.FaqOptions>
+      </ChatBot.Root>,
+    );
+
+    const optionButton = screen.getByRole('button', { name: 'Ask about Billing' });
+    expect(optionButton).toHaveClass('custom-faq-button');
+    expect(optionButton).toHaveAttribute('data-index', '0');
+
+    fireEvent.click(optionButton);
+
+    expect(await screen.findByText('Billing help is available.')).toBeInTheDocument();
+  });
+
   it('throws a helpful error when a ChatBot slot is rendered outside ChatBot.Root', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 

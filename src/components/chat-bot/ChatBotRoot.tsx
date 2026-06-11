@@ -17,7 +17,17 @@ export function ChatBotRoot(props: ChatBotRootProps) {
     sendLabel = 'Send',
     showFaqOptions = false,
     faqOptionsLabel = 'Choose a question:',
+    initialMessages: _initialMessages,
+    metadata: _metadata,
+    onMessagesChange: _onMessagesChange,
+    onError: _onError,
+    mode: _mode,
+    faqItems: _faqItems,
+    faqResolver: _faqResolver,
+    provider: _provider,
+    fallbackResponse: _fallbackResponse,
     children,
+    ...sectionProps
   } = props;
   const chatbot = useChatbot(props);
   const [draft, setDraft] = useState('');
@@ -56,6 +66,7 @@ export function ChatBotRoot(props: ChatBotRootProps) {
       }}
     >
       <section
+        {...sectionProps}
         aria-label={title}
         className={cn(
           'flex h-[32rem] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-lg',

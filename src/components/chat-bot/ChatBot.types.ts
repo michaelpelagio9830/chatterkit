@@ -31,7 +31,8 @@ export type ChatBotFaqOptionRenderState = {
 
 export type FaqOptionRenderer = (faqItem: FaqItem, state: ChatBotFaqOptionRenderState) => ReactNode;
 
-export type ChatBotRootProps = ChatBotProps;
+export type ChatBotRootProps = ChatBotProps &
+  Omit<HTMLAttributes<HTMLElement>, keyof ChatBotProps>;
 export type ChatBotHeaderProps = HTMLAttributes<HTMLElement>;
 export type ChatBotTitleProps = HTMLAttributes<HTMLHeadingElement>;
 export type ChatBotMessagesProps = Omit<HTMLAttributes<HTMLUListElement | HTMLDivElement>, 'children'> & {

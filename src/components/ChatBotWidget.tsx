@@ -164,12 +164,13 @@ function ChatBotWidgetCloseButton({ children, className, onClick, ...buttonProps
   );
 }
 
-function ChatBotWidgetChatBot({ children, className, classNames }: ChatBotWidgetChatBotProps) {
+function ChatBotWidgetChatBot({ children, className, classNames, ...sectionProps }: ChatBotWidgetChatBotProps) {
   const { chatBotProps, widgetClassNames } = useChatBotWidgetContext('ChatBotWidget.ChatBot');
 
   return (
     <BaseChatBot
       {...chatBotProps}
+      {...sectionProps}
       className={cn('h-[min(32rem,calc(100vh-7rem))]', widgetClassNames?.chatBot, chatBotProps.className, className)}
       classNames={{ ...chatBotProps.classNames, ...classNames }}
     >

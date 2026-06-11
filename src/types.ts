@@ -235,9 +235,10 @@ export type ChatBotWidgetPanelProps = HTMLAttributes<HTMLDivElement>;
 
 export type ChatBotWidgetCloseButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
-export type ChatBotWidgetChatBotProps = Pick<ChatBotBaseProps, 'className' | 'classNames'> & {
-  children?: ReactNode;
-};
+export type ChatBotWidgetChatBotProps = Pick<ChatBotBaseProps, 'className' | 'classNames'> &
+  Omit<HTMLAttributes<HTMLElement>, keyof ChatBotBaseProps> & {
+    children?: ReactNode;
+  };
 
 export type UseChatbotOptions = Pick<
   ChatBotBaseProps,

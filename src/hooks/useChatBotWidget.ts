@@ -1,10 +1,11 @@
-import { useCallback, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
 
 const DEFAULT_LAUNCHER_SIZE = 56;
 const DEFAULT_MARGIN = 24;
 const DRAG_THRESHOLD_PX = 6;
 const DEFAULT_PANEL_WIDTH = 448;
 const DEFAULT_PANEL_HEIGHT = 584;
+const DEFAULT_POSITION = { x: DEFAULT_MARGIN, y: DEFAULT_MARGIN };
 
 interface Position {
   x: number;
@@ -40,9 +41,9 @@ export interface UseChatBotWidgetResult {
   };
 }
 
-function getDefaultPosition() {
+function getViewportSafeDefaultPosition() {
   if (typeof window === 'undefined') {
-    return { x: DEFAULT_MARGIN, y: DEFAULT_MARGIN };
+    return DEFAULT_POSITION;
   }
 
   return {
@@ -85,9 +86,17 @@ function clampPanelPosition(position: Position) {
 export function useChatBotWidget(options: UseChatBotWidgetOptions = {}): UseChatBotWidgetResult {
   const { defaultOpen = false, draggable = false } = options;
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  const [position, setPosition] = useState<Position>(() => getDefaultPosition());
+  const [position, setPosition] = useState<Position>(DEFAULT_POSITION);
   const dragStateRef = useRef<DragState | null>(null);
   const shouldSuppressClickRef = useRef(false);
+
+  useEffect(() => {
+    if (!draggable) {
+      return;
+    }
+
+    setPosition(getViewportSafeDefaultPosition());
+  }, [draggable]);
 
   const launcherStyle = useMemo(
     () =>

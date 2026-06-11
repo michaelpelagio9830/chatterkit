@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { ChatBot } from './ChatBot';
 import { ChatBotWidget } from './ChatBotWidget';
@@ -46,6 +47,13 @@ describe('ChatBotWidget', () => {
     render(<ChatBotWidget mode="faq" faqItems={[]} title="Support bot" defaultOpen />);
 
     expect(screen.getByRole('region', { name: 'Support bot' })).toBeInTheDocument();
+  });
+
+  it('renders deterministic draggable coordinates before client effects run', () => {
+    const markup = renderToString(<ChatBotWidget mode="faq" faqItems={[]} title="Support bot" draggable />);
+
+    expect(markup).toContain('left:24px');
+    expect(markup).toContain('top:24px');
   });
 
   it('supports custom launcher labels and icons', () => {

@@ -1,6 +1,6 @@
 {
   "name": "modular-react-chatbot",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "A modular React chatbot component with FAQ and adapter modes.",
   "type": "module",
   "license": "MIT",

@@ -25,6 +25,12 @@ export const faqItems: FaqItem[] = [
     answer: 'You can contact support through your dashboard or email support@example.com.',
     keywords: ['support', 'help', 'contact'],
   },
+  {
+    id: 'get-to-know-us',
+    question: 'Want to get to know us?',
+    answer: 'You can go to www.facebook.com. ',
+    keywords: ['support', 'help', 'contact'],
+  },
 ];
 
 export function FaqModeExample() {

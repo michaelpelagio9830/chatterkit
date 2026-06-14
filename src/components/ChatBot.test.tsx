@@ -45,13 +45,22 @@ describe('ChatBot', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Contact Us' }));
 
-    expect(await screen.findByText('Email support@example.com.')).toBeInTheDocument();
+    const emailLink = await screen.findByRole('link', { name: 'support@example.com' });
+    expect(emailLink.closest('div')).toHaveTextContent('Email support@example.com.');
+    expect(emailLink).toHaveAttribute(
+      'href',
+      'mailto:support@example.com',
+    );
     expect(screen.getAllByText('Contact Us')).toHaveLength(2);
   });
 
   it('supports compound customization with a custom submit icon and render-prop messages', async () => {
     render(
-      <ChatBot.Root mode="faq" title="Composed bot" faqItems={[{ question: 'Hello', answer: 'Hi there!' }]}>
+      <ChatBot.Root
+        mode="faq"
+        title="Composed bot"
+        faqItems={[{ question: 'Hello', answer: 'Hi there! Visit www.example.com or email support@example.com.' }]}
+      >
         <ChatBot.Header className="custom-header">
           <span>🤖</span>
           <ChatBot.Title className="custom-title" />
@@ -86,9 +95,15 @@ describe('ChatBot', () => {
     expect(screen.getByRole('button', { name: '➤' })).toBeEnabled();
     fireEvent.click(screen.getByRole('button', { name: '➤' }));
 
-    expect(await screen.findByText('Hi there!')).toBeInTheDocument();
+    expect(await screen.findByText(/Hi there!/)).toBeInTheDocument();
     expect(screen.getByTestId('icon-user')).toHaveTextContent('🧑');
     expect(screen.getByTestId('icon-bot')).toHaveTextContent('🤖');
+
+    const urlLink = screen.getByRole('link', { name: 'www.example.com' });
+    expect(urlLink).toHaveAttribute('href', 'https://www.example.com');
+
+    const emailLink = screen.getByRole('link', { name: 'support@example.com' });
+    expect(emailLink).toHaveAttribute('href', 'mailto:support@example.com');
   });
 
   it('supports fully custom FAQ option buttons with helper props', async () => {

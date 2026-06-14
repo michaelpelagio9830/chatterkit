@@ -42,7 +42,7 @@ const simulatedApiProvider = {
 
 function Demo() {
   return (
-    <main className="min-h-screen bg-slate-100 p-8 text-slate-900">
+    <main className="min-h-screen h-svh bg-slate-100 p-8 text-slate-900">
       <div className="mx-auto max-w-5xl space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Modular React Chatbot</h1>
@@ -282,9 +282,9 @@ function Demo() {
         fallbackResponse="I do not know that yet. Please contact support for help."
         launcherLabel="Open custom support chat"
         closeLabel="Minimize custom support chat"
-        draggable
+        // draggable
       >
-        <ChatBotWidget.Panel className="chatbot-panel-enter items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
+        <ChatBotWidget.Panel className="chatbot-panel-enter  items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
 
           <ChatBotWidget.ChatBot className="h-[30rem] rounded-none border-0 shadow-none">
             <ChatBot.Header className="bg-purple-600 text-white">
@@ -346,7 +346,7 @@ function Demo() {
             </ChatBot.Composer>
           </ChatBotWidget.ChatBot>
         </ChatBotWidget.Panel>
-        <ChatBotWidget.Launcher className="chatbot-launcher-attention bottom-24 bg-purple-600 shadow-purple-300 transition-transform duration-300 hover:scale-110 hover:rotate-6 hover:bg-purple-700">
+        <ChatBotWidget.Launcher className="chatbot-launcher-attention bottom-5 bg-purple-600 shadow-purple-300 transition-transform duration-300 hover:scale-110 hover:rotate-6 hover:bg-purple-700">
           ✨
         </ChatBotWidget.Launcher>
       </ChatBotWidget.Root>

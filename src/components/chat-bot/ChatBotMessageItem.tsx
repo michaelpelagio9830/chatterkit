@@ -1,4 +1,5 @@
 import { cn } from '../../utils/cn';
+import { linkify, linkifyNode } from '../../utils/linkify';
 import { useChatBotContext } from './ChatBot.context';
 import type { ChatBotMessageItemProps } from './ChatBot.types';
 
@@ -18,7 +19,7 @@ export function ChatBotMessageItem({ message, children, className, bubbleClassNa
           bubbleClassName,
         )}
       >
-        {children ?? message.content}
+        {children != null ? linkifyNode(children) : linkify(message.content)}
       </div>
     </li>
   );

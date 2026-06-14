@@ -1,6 +1,8 @@
-import { createContext, useContext, type ComponentType, type ReactNode } from 'react';
-import { ChatBot as BaseChatBot } from './ChatBot';
+import { createContext, useContext, useState, type ComponentType, type Dispatch, type ReactNode, type SetStateAction } from 'react';
+import { DefaultChatBotContent } from './chat-bot/ChatBotPreset';
+import { ChatBotRoot } from './chat-bot/ChatBotRoot';
 import { useChatBotWidget, type UseChatBotWidgetResult } from '../hooks/useChatBotWidget';
+import { useChatbot } from '../hooks/useChatbot';
 import type {
   ChatBotProps,
   ChatBotWidgetChatBotProps,
@@ -14,6 +16,8 @@ import { cn } from '../utils/cn';
 
 interface ChatBotWidgetContextValue extends UseChatBotWidgetResult {
   chatBotProps: ChatBotProps;
+  chatBotState: ReturnType<typeof useChatbot>;
+  draftState: [string, Dispatch<SetStateAction<string>>];
   launcherLabel: string;
   closeLabel: string;
   launcherIcon: ReactNode;
@@ -69,12 +73,16 @@ function ChatBotWidgetRoot(props: ChatBotWidgetRootProps) {
   const { defaultOpen, draggable, launcherLabel, closeLabel, launcherIcon, className, widgetClassNames, chatBotProps } =
     splitWidgetProps(widgetProps);
   const widget = useChatBotWidget({ defaultOpen, draggable });
+  const chatBotState = useChatbot(chatBotProps);
+  const draftState = useState('');
 
   return (
     <ChatBotWidgetContext.Provider
       value={{
         ...widget,
         chatBotProps,
+        chatBotState,
+        draftState,
         launcherLabel,
         closeLabel,
         launcherIcon,
@@ -165,17 +173,19 @@ function ChatBotWidgetCloseButton({ children, className, onClick, ...buttonProps
 }
 
 function ChatBotWidgetChatBot({ children, className, classNames, ...sectionProps }: ChatBotWidgetChatBotProps) {
-  const { chatBotProps, widgetClassNames } = useChatBotWidgetContext('ChatBotWidget.ChatBot');
+  const { chatBotProps, chatBotState, draftState, widgetClassNames } = useChatBotWidgetContext('ChatBotWidget.ChatBot');
 
   return (
-    <BaseChatBot
+    <ChatBotRoot
       {...chatBotProps}
       {...sectionProps}
+      chatbotState={chatBotState}
+      draftState={draftState}
       className={cn('h-[min(32rem,calc(100vh-7rem))]', widgetClassNames?.chatBot, chatBotProps.className, className)}
       classNames={{ ...chatBotProps.classNames, ...classNames }}
     >
-      {children}
-    </BaseChatBot>
+      {children ?? <DefaultChatBotContent />}
+    </ChatBotRoot>
   );
 }
 

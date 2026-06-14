@@ -1,11 +1,13 @@
 import type {
   ButtonHTMLAttributes,
   ComponentType,
+  Dispatch,
   HTMLAttributes,
   InputHTMLAttributes,
   ReactNode,
+  SetStateAction,
 } from 'react';
-import type { ChatBotProps, ChatMessage, FaqItem } from '../../types';
+import type { ChatBotProps, ChatMessage, FaqItem, UseChatbotResult } from '../../types';
 
 export type MessageRenderer = (message: ChatMessage) => ReactNode;
 
@@ -32,7 +34,10 @@ export type ChatBotFaqOptionRenderState = {
 export type FaqOptionRenderer = (faqItem: FaqItem, state: ChatBotFaqOptionRenderState) => ReactNode;
 
 export type ChatBotRootProps = ChatBotProps &
-  Omit<HTMLAttributes<HTMLElement>, keyof ChatBotProps>;
+  Omit<HTMLAttributes<HTMLElement>, keyof ChatBotProps> & {
+    chatbotState?: UseChatbotResult;
+    draftState?: [string, Dispatch<SetStateAction<string>>];
+  };
 export type ChatBotHeaderProps = HTMLAttributes<HTMLElement>;
 export type ChatBotTitleProps = HTMLAttributes<HTMLHeadingElement>;
 export type ChatBotMessagesProps = Omit<HTMLAttributes<HTMLUListElement | HTMLDivElement>, 'children'> & {

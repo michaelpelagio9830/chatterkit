@@ -26,11 +26,15 @@ export function ChatBotRoot(props: ChatBotRootProps) {
     faqResolver: _faqResolver,
     provider: _provider,
     fallbackResponse: _fallbackResponse,
+    chatbotState,
+    draftState,
     children,
     ...sectionProps
   } = props;
-  const chatbot = useChatbot(props);
-  const [draft, setDraft] = useState('');
+  const internalChatbot = useChatbot(props);
+  const chatbot = chatbotState ?? internalChatbot;
+  const [internalDraft, setInternalDraft] = useState('');
+  const [draft, setDraft] = draftState ?? [internalDraft, setInternalDraft];
   const isComposerDisabled = disabled || chatbot.isLoading;
 
   const submitDraft = async () => {

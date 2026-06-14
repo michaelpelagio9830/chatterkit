@@ -43,6 +43,41 @@ describe('ChatBotWidget', () => {
     expect(screen.getByRole('button', { name: 'Open chat' })).toBeInTheDocument();
   });
 
+  it('preserves conversation state when the chat panel is closed and reopened', async () => {
+    render(
+      <ChatBotWidget
+        mode="faq"
+        faqItems={[{ question: 'Status', answer: 'All systems operational.' }]}
+        title="Support bot"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open chat' }));
+    fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Status' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(await screen.findByText('All systems operational.')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close chat' }));
+    expect(screen.queryByText('All systems operational.')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open chat' }));
+
+    expect(screen.getByText('Status')).toBeInTheDocument();
+    expect(screen.getByText('All systems operational.')).toBeInTheDocument();
+  });
+
+  it('preserves draft text when the chat panel is closed and reopened', () => {
+    render(<ChatBotWidget mode="faq" faqItems={[]} title="Support bot" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open chat' }));
+    fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Uns sent draft' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Close chat' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Open chat' }));
+
+    expect(screen.getByLabelText('Message')).toHaveValue('Uns sent draft');
+  });
+
   it('can render the chat panel open initially', () => {
     render(<ChatBotWidget mode="faq" faqItems={[]} title="Support bot" defaultOpen />);
 

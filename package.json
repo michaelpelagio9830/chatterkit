@@ -26,6 +26,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build && tsc -p tsconfig.build.json",
+    "verify:css": "node scripts/verify-css-build.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"

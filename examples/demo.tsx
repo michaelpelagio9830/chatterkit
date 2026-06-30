@@ -45,7 +45,7 @@ function Demo() {
     <main className="min-h-screen h-svh bg-slate-100 p-8 text-slate-900">
       <div className="mx-auto max-w-5xl space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Modular React Chatbot</h1>
+          <h1 className="text-3xl font-bold">Chatterkit</h1>
           <p className="mt-2 text-slate-600">
             FAQ mode demo using the reusable ChatBot component and floating
             widget launcher.

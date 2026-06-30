@@ -1,4 +1,4 @@
-# Modular React Chatbot
+# Chatterkit
 
 A reusable React chatbot component designed for two MVP modes:
 
@@ -10,14 +10,14 @@ The recommended stack is **React + TypeScript + Tailwind CSS + Vite + Vitest**.
 ## Installation
 
 ```bash
-npm install modular-react-chatbot
+npm install chatterkit
 ```
 
 Import the component and package CSS:
 
 ```tsx
-import { ChatBot, ChatBotWidget } from 'modular-react-chatbot';
-import 'modular-react-chatbot/style.css';
+import { ChatBot, ChatBotWidget } from 'chatterkit';
+import 'chatterkit/style.css';
 ```
 
 ## FAQ mode
@@ -25,8 +25,8 @@ import 'modular-react-chatbot/style.css';
 Use FAQ mode when the chatbot should answer from local predefined content.
 
 ```tsx
-import { ChatBot, type FaqItem } from 'modular-react-chatbot';
-import 'modular-react-chatbot/style.css';
+import { ChatBot, type FaqItem } from 'chatterkit';
+import 'chatterkit/style.css';
 
 const faqItems: FaqItem[] = [
   {
@@ -111,8 +111,8 @@ You can also provide a custom FAQ resolver:
 Use adapter mode when the chatbot should call an external service. The package exposes a generic provider contract and an OpenAPI-friendly helper.
 
 ```tsx
-import { ChatBot, createOpenApiProvider } from 'modular-react-chatbot';
-import 'modular-react-chatbot/style.css';
+import { ChatBot, createOpenApiProvider } from 'chatterkit';
+import 'chatterkit/style.css';
 
 const provider = createOpenApiProvider<{ message: string }, { answer: string }>({
   endpoint: '/api/chat',
@@ -139,7 +139,7 @@ export function AiAssistant() {
 You can also implement your own provider:
 
 ```ts
-import type { ChatProvider } from 'modular-react-chatbot';
+import type { ChatProvider } from 'chatterkit';
 
 export const provider: ChatProvider = {
   async sendMessage(input, context) {
@@ -259,8 +259,8 @@ If a slot is used outside the correct context, the component throws a runtime er
 Use `ChatBotWidget` when you want a lower-right floating bubble that opens the chat panel when clicked. It supports the same `faq` and `adapter` mode configuration as `ChatBot`.
 
 ```tsx
-import { ChatBotWidget, type FaqItem } from 'modular-react-chatbot';
-import 'modular-react-chatbot/style.css';
+import { ChatBotWidget, type FaqItem } from 'chatterkit';
+import 'chatterkit/style.css';
 
 const faqItems: FaqItem[] = [
   {
@@ -332,17 +332,51 @@ For production LLM/OpenAPI integrations, avoid exposing provider API keys direct
 
 ## Tailwind setup
 
-The package ships default Tailwind-generated CSS through `modular-react-chatbot/style.css`.
+The package ships default Tailwind-generated CSS through `chatterkit/style.css`.
 
 If you want to override styles with your own Tailwind classes, include your app and chatbot usage files in your Tailwind `content` configuration:
 
 ```ts
 export default {
-  content: ['./src/**/*.{ts,tsx}', './node_modules/modular-react-chatbot/dist/**/*.{js,cjs}'],
+  content: ['./src/**/*.{ts,tsx}', './node_modules/chatterkit/dist/**/*.{js,cjs}'],
 };
 ```
 
 The component also accepts `className` and `classNames` props for targeted styling overrides.
+
+## Publishing to npm
+
+Package publishing is handled through GitHub Actions.
+
+### Required repository secret
+
+Create an npm automation token and store it in the GitHub repository as an Actions secret named `NPM_TOKEN`:
+
+1. In npm, create an access token with permission to publish the `chatterkit` package.
+2. In GitHub, open **Settings → Secrets and variables → Actions**.
+3. Add a repository secret named `NPM_TOKEN` with the npm token value.
+
+Do not commit npm credentials or `.npmrc` files containing tokens to the repository.
+
+### Release flow
+
+Before publishing, update `package.json` to a version that does not already exist on npm, then merge the release commit.
+
+The `Publish to npm` workflow validates the package with:
+
+```bash
+yarn install --frozen-lockfile
+yarn typecheck
+yarn test
+yarn build
+```
+
+Publishing is intentionally gated and only runs when a maintainer either:
+
+- publishes a GitHub Release, or
+- manually runs the `Publish to npm` workflow from the GitHub Actions tab.
+
+Pull request workflows never publish to npm. The regular `CI` workflow only validates type checking, tests, and package builds.
 
 ## Local development
 

@@ -1,7 +1,7 @@
 {
-  "name": "modular-react-chatbot",
+  "name": "chatterkit",
   "version": "0.1.5",
-  "description": "A modular React chatbot component with FAQ and adapter modes.",
+  "description": "A modular React chat widget kit with FAQ and adapter modes.",
   "type": "module",
   "license": "MIT",
   "main": "./dist/index.cjs",

@@ -13,4 +13,4 @@
 ## 3. Documentation
 
 - [x] 3.1 Update README styling/import guidance to mention that `chatterkit/style.css` is a no-preflight package stylesheet intended to avoid host-app global reset side effects.
-- [x] 3.2 Document any implementation notes needed for contributors to avoid reintroducing Tailwind preflight or unscoped global CSS.
+- [x] 3.2 Document any implementation notes needed for contributors to avoid reintroducing Tailwind preflight or unscoped global CSS.~`

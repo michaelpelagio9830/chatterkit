@@ -11,6 +11,10 @@
     "dist",
     "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelpelagio9830/chatterkit.git"
+  },
   "sideEffects": [
     "./dist/style.css",
     "./src/style.css"

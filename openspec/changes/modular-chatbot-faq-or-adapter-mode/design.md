@@ -25,6 +25,9 @@ The primary constraints are:
 - Provide a `ChatBotWidget` wrapper for floating launcher use cases.
 - Allow the floating launcher bubble to be draggable when `draggable` is enabled.
 - Provide a lightweight showcase page that demonstrates core chatbot options.
+- Provide a compound `ChatBotWidget` API so consumers can compose custom launcher, panel, close button, and chat body designs.
+- Extract widget state and drag behavior into a custom hook to keep widget rendering components focused and reusable.
+- Provide a compound `ChatBot` API so consumers can customize the chat header, messages, states, composer, input, and submit button content.
 
 **Non-Goals:**
 
@@ -106,6 +109,105 @@ The draggable behavior should:
 - **Rationale:** Dragging is useful but should be opt-in because it adds interaction complexity and may not be wanted in every app.
 - **Alternative considered:** Always draggable. This could surprise users and complicate accessibility/mobile behavior for consumers who only need a fixed launcher.
 
+### Add a compound `ChatBotWidget` composition API
+
+`ChatBotWidget` should keep its simple preset API while also exposing compound components for custom designs:
+
+```tsx
+<ChatBotWidget.Root mode="faq" faqItems={faqItems} draggable>
+  <ChatBotWidget.Panel>
+    <ChatBotWidget.CloseButton />
+    <ChatBotWidget.ChatBot />
+  </ChatBotWidget.Panel>
+
+  <ChatBotWidget.Launcher>💬</ChatBotWidget.Launcher>
+</ChatBotWidget.Root>
+```
+
+The preset API remains available:
+
+```tsx
+<ChatBotWidget mode="faq" faqItems={faqItems} />
+```
+
+- **Rationale:** Consumers often need a branded launcher, custom panel shell, custom header, or different close control. Compound components make these customizations possible without overloading the preset with many one-off props.
+- **Alternative considered:** Continue with only `widgetClassNames` and icon/label props. This is simple, but it limits layout-level customization and keeps rendering responsibilities concentrated in one component.
+
+### Add a compound `ChatBot` composition API
+
+`ChatBot` should keep its simple preset API while exposing compound components for full chatbox customization. `ChatBot.Root` owns the mode props and calls `useChatbot`; child slots consume context for messages, loading state, errors, input state, and submission.
+
+```tsx
+<ChatBot.Root mode="faq" faqItems={faqItems} title="Custom Support">
+  <ChatBot.Header>
+    <ChatBot.Title />
+  </ChatBot.Header>
+  <ChatBot.Messages>
+    {(message) => (
+      <ChatBot.MessageItem message={message}>
+        <span>🤖</span>
+        {message.content}
+      </ChatBot.MessageItem>
+    )}
+  </ChatBot.Messages>
+  <ChatBot.Composer>
+    <ChatBot.Input />
+    <ChatBot.SubmitButton>➤</ChatBot.SubmitButton>
+  </ChatBot.Composer>
+</ChatBot.Root>
+```
+
+`ChatBotWidget.ChatBot` should bridge mode props from `ChatBotWidget.Root` into `ChatBot.Root`, so widget consumers customize chat slots without duplicating FAQ or adapter configuration.
+
+- **Rationale:** `classNames` supports styling but does not let consumers change structural content such as submit icons, avatars, message metadata, custom headers, or custom state views. Compound components plus render props provide slot-level customization while preserving the default preset.
+- **Alternative considered:** Add more one-off props such as `submitIcon`, `renderMessage`, and `renderHeader`. This can solve isolated cases but scales poorly as customization needs grow.
+
+### Consider stricter developer tooling for compound component nesting
+
+Compound components such as `ChatBot.Header`, `ChatBot.Messages`, `ChatBot.Composer`, and `ChatBot.SubmitButton` require `ChatBot` context. In embedded usage, that context is provided by `ChatBot.Root`. In widget usage, `ChatBotWidget.ChatBot` bridges widget mode props into `ChatBot.Root` and provides the required context.
+
+Incorrect widget nesting:
+
+```tsx
+<ChatBotWidget.Panel>
+  <ChatBot.Header />
+  <ChatBotWidget.ChatBot />
+</ChatBotWidget.Panel>
+```
+
+Correct widget nesting:
+
+```tsx
+<ChatBotWidget.Panel>
+  <ChatBotWidget.ChatBot>
+    <ChatBot.Header />
+    <ChatBot.Messages />
+    <ChatBot.Composer>
+      <ChatBot.Input />
+      <ChatBot.SubmitButton>➤</ChatBot.SubmitButton>
+    </ChatBot.Composer>
+  </ChatBotWidget.ChatBot>
+</ChatBotWidget.Panel>
+```
+
+Runtime guards now provide helpful errors when slots are rendered outside the correct context. However, TypeScript cannot fully validate React component ancestry in normal JSX because children are generally typed as `ReactNode` and JSX does not preserve parent-child component constraints deeply enough for reliable static checking.
+
+Future stricter tooling options include:
+
+1. A custom ESLint rule to detect `ChatBot.*` slots outside `ChatBot.Root` or `ChatBotWidget.ChatBot`.
+2. A scoped render-function API that exposes slot components only inside the valid context.
+3. Documentation and examples that clearly show valid and invalid nesting.
+
+- **Rationale:** Runtime guards protect local development and tests, but earlier feedback in editors/CI would improve developer experience for compound component APIs.
+- **Alternative considered:** Rely only on TypeScript. This is insufficient for normal JSX ancestry validation.
+
+### Extract widget behavior into `useChatBotWidget`
+
+The open/close state, launcher position, panel position, pointer handlers, viewport clamping, and click-versus-drag suppression should move into a dedicated hook used by the widget root/context.
+
+- **Rationale:** The floating widget has interaction logic that is independent of its visual structure. A hook makes this behavior easier to test, reuse, and keep separate from JSX composition.
+- **Alternative considered:** Keep all state and pointer handling inside `ChatBotWidget.tsx`. This works for the MVP but becomes harder to maintain as composition slots and custom designs are added.
+
 ### Separate core logic from React UI concerns
 
 The implementation should separate:
@@ -172,6 +274,10 @@ The MVP will include a Vite-powered showcase page that renders the main chatbot 
 - **[Risk] Draggable launcher behavior may cause accidental opens or awkward mobile behavior** → Keep dragging opt-in, use pointer movement thresholds, and add tests for click versus drag behavior.
 - **[Risk] Floating panels can appear off-screen near viewport edges** → Constrain launcher movement to the viewport and use safe default lower-right panel placement for the MVP.
 - **[Risk] Showcase examples may become stale** → Keep examples small and compile them as part of verification.
+- **[Risk] Compound components can increase API surface area** → Keep the compound API small and preserve the simple preset API for common usage.
+- **[Risk] Widget context can be misused outside `Root`** → Provide clear runtime errors from compound components when they are rendered without the root provider.
+- **[Risk] Render-prop message customization can confuse beginners** → Keep `<ChatBot.Messages />` working with a default renderer and document render props as the advanced path.
+- **[Risk] Compound slot nesting mistakes are only caught at runtime** → Document valid nesting, keep helpful runtime guards, and consider ESLint tooling as a future enhancement.
 
 ## Migration Plan
 
@@ -187,7 +293,10 @@ Recommended implementation order:
 6. Implement the floating `ChatBotWidget` launcher shell.
 7. Add optional `draggable` launcher behavior.
 8. Add a lightweight showcase page for embedded and widget variants.
-9. Add tests, examples, documentation, and package build configuration.
+9. Extract widget interaction behavior into `useChatBotWidget`.
+10. Add the compound widget API and rebuild the preset with those primitives.
+11. Add the compound `ChatBot` API and bridge it through `ChatBotWidget.ChatBot`.
+12. Add tests, examples, documentation, and package build configuration.
 
 Rollback strategy: remove the new package source/configuration and keep the OpenSpec artifacts for future reconsideration.
 

@@ -1,6 +1,6 @@
 {
   "name": "chatterkit",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A modular React chat widget kit with FAQ and adapter modes.",
   "type": "module",
   "license": "MIT",
@@ -11,6 +11,10 @@
     "dist",
     "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelpelagio9830/chatterkit.git"
+  },
   "sideEffects": [
     "./dist/style.css",
     "./src/style.css"

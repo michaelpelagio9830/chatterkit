@@ -23,7 +23,6 @@ jobs:
         with:
           node-version: 20
           cache: yarn
-          registry-url: https://registry.npmjs.org
 
       - name: Set up npm for trusted publishing
         run: npm install -g npm@latest
@@ -43,11 +42,11 @@ jobs:
       - name: Build package
         run: yarn build
 
-      - name: Check npm trusted publishing environment
-        run: |
-          node --version
-          npm --version
-          npm whoami || true
+      # - name: Check npm trusted publishing environment
+      #   run: |
+      #     node --version
+      #     npm --version
+      #     npm whoami || true
 
 
       - name: Publish package to npm

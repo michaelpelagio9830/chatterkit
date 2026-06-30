@@ -2,7 +2,7 @@
 
 Chatterkit is a Vite-built React package published to npm as `chatterkit`. The package already defines npm metadata for library output, including `main`, `module`, `types`, `files`, and an exported stylesheet. Existing scripts cover the core release quality gates: `typecheck`, `test`, and `build`. The repository currently has no `.github/workflows` directory, so validation and npm publishing are manual.
 
-GitHub Actions can provide two separate concerns: continuous validation for pull requests and pushes, and intentional npm publishing for release events or version tags. Publishing requires an npm automation token stored as a GitHub Actions secret and should avoid running on arbitrary pull request code.
+GitHub Actions can provide two separate concerns: continuous validation for pull requests and pushes, and intentional npm publishing for release events. Publishing uses npm trusted publishing through GitHub Actions OIDC and should avoid running on arbitrary pull request code.
 
 ## Goals / Non-Goals
 
@@ -10,9 +10,9 @@ GitHub Actions can provide two separate concerns: continuous validation for pull
 
 - Add GitHub Actions CI that installs dependencies, runs type checking, runs tests, and builds the package.
 - Add an npm publishing workflow that publishes the package only from an explicit release trigger.
-- Use secure npm authentication through `NPM_TOKEN` and least-privilege GitHub workflow permissions.
+- Use secure npm trusted publishing through GitHub Actions OIDC and least-privilege GitHub workflow permissions.
 - Keep the workflow aligned with the current Yarn lockfile and package scripts.
-- Document the release trigger and required repository secret.
+- Document the release trigger and required npm trusted publisher configuration.
 
 **Non-Goals:**
 
@@ -34,9 +34,9 @@ GitHub Actions can provide two separate concerns: continuous validation for pull
    - Rationale: this matches the repository lockfile and avoids dependency drift in CI.
    - Alternative considered: use `npm ci`. Rejected unless the project adds a package-lock file or intentionally switches package managers.
 
-3. **Publish with npm registry authentication via `NPM_TOKEN`.**
-   - The publish workflow will configure Node for `registry-url: https://registry.npmjs.org` and run `npm publish` with `NODE_AUTH_TOKEN` sourced from `secrets.NPM_TOKEN`.
-   - Rationale: npm publish is registry-native and avoids adding a release dependency.
+3. **Publish with npm trusted publishing via GitHub Actions OIDC.**
+   - The publish workflow will grant `id-token: write`, configure Node for `registry-url: https://registry.npmjs.org`, and run `npm publish --access public --provenance` without `NODE_AUTH_TOKEN`.
+   - Rationale: npm trusted publishing avoids long-lived npm tokens, lets npm verify the GitHub Actions workflow identity, and can attach provenance.
    - Alternative considered: use GitHub Packages. Rejected because the requested target is npm.
 
 4. **Gate publishing behind release/tag semantics and prepublish validation.**
@@ -46,17 +46,17 @@ GitHub Actions can provide two separate concerns: continuous validation for pull
 
 ## Risks / Trade-offs
 
-- **Invalid or missing `NPM_TOKEN`** → Document the required secret and let the publish job fail before publishing if authentication is unavailable.
+- **Missing or mismatched trusted publisher configuration** → Document the required npm package trusted publisher settings and let the publish job fail before publishing if OIDC authentication is unavailable.
 - **Version already exists on npm** → Publishing will fail safely; release documentation should instruct maintainers to bump `package.json` before triggering publish.
 - **Accidental publish trigger** → Use explicit release/tag triggers and avoid pull request publishing.
 - **Dependency install mismatch** → Use the committed `yarn.lock` with frozen lockfile mode.
-- **npm provenance support may require additional setup** → Consider enabling provenance if the repository and npm package support trusted publishing; otherwise use token-based publishing first.
+- **npm provenance support requires trusted publishing setup** → Configure npm package trusted publishing before relying on the release workflow.
 
 ## Migration Plan
 
 1. Add `.github/workflows/ci.yml` for validation.
 2. Add `.github/workflows/publish-npm.yml` for intentional npm publishing.
-3. Configure the GitHub repository secret `NPM_TOKEN` with an npm automation token.
+3. Configure npm trusted publishing for the GitHub repository and `publish-npm.yml` workflow.
 4. Update documentation with release steps and trigger behavior.
 5. Validate workflow syntax and run local scripts before merging.
 
@@ -64,4 +64,4 @@ Rollback is simple: disable or remove the publish workflow if release automation
 
 ## Open Questions
 
-- Should publishing trigger on GitHub Release publication, `v*` tags, manual `workflow_dispatch`, or a combination? The implementation should choose a safe default and document it.
+- Publishing is release-only: it triggers when a maintainer publishes a GitHub Release.

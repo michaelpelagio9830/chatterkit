@@ -42,11 +42,12 @@ jobs:
       - name: Build package
         run: yarn build
 
-      # - name: Check npm trusted publishing environment
-      #   run: |
-      #     node --version
-      #     npm --version
-      #     npm whoami || true
+      - name: Check npm trusted publishing environment
+        run: |
+          node --version
+          npm --version
+          npm config get registry
+
 
 
       - name: Publish package to npm

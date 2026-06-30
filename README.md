@@ -348,13 +348,17 @@ The component also accepts `className` and `classNames` props for targeted styli
 
 Package publishing is handled through GitHub Actions.
 
-### Required repository secret
+### Required npm trusted publisher setup
 
-Create an npm automation token and store it in the GitHub repository as an Actions secret named `NPM_TOKEN`:
+The `Publish to npm` workflow uses npm trusted publishing with GitHub Actions OIDC. No npm access token or `NPM_TOKEN` repository secret is required.
 
-1. In npm, create an access token with permission to publish the `chatterkit` package.
-2. In GitHub, open **Settings → Secrets and variables → Actions**.
-3. Add a repository secret named `NPM_TOKEN` with the npm token value.
+Configure the `chatterkit` package on npm with a trusted publisher that matches this repository and workflow:
+
+1. In npm, open the `chatterkit` package settings.
+2. Enable trusted publishing for GitHub Actions.
+3. Set the repository owner to `michaelpelagio9830`.
+4. Set the repository name to `ChatBot`.
+5. Set the workflow filename to `publish-npm.yml`.
 
 Do not commit npm credentials or `.npmrc` files containing tokens to the repository.
 
@@ -371,10 +375,7 @@ yarn test
 yarn build
 ```
 
-Publishing is intentionally gated and only runs when a maintainer either:
-
-- publishes a GitHub Release, or
-- manually runs the `Publish to npm` workflow from the GitHub Actions tab.
+Publishing is intentionally gated and only runs when a maintainer publishes a GitHub Release. The publish job requests a GitHub Actions OIDC token and runs `npm publish --access public --provenance` so npm can verify the trusted publisher identity and attach provenance.
 
 Pull request workflows never publish to npm. The regular `CI` workflow only validates type checking, tests, and package builds.
 

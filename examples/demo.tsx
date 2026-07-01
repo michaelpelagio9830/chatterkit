@@ -282,7 +282,7 @@ function Demo() {
         fallbackResponse="I do not know that yet. Please contact support for help."
         launcherLabel="Open custom support chat"
         closeLabel="Minimize custom support chat"
-        // draggable
+        draggable
       >
         <ChatBotWidget.Panel className="chatbot-panel-enter  items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
 

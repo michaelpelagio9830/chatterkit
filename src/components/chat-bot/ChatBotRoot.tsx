@@ -73,7 +73,7 @@ export function ChatBotRoot(props: ChatBotRootProps) {
         {...sectionProps}
         aria-label={title}
         className={cn(
-          'flex h-[32rem] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-lg',
+          'flex h-[32rem] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 font-sans shadow-lg',
           className,
           classNames?.root,
         )}

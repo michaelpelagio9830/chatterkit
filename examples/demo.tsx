@@ -128,6 +128,107 @@ function Demo() {
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
+          <h2 className="text-xl font-semibold">Basic chatbot w/o styles</h2>
+          <p className="mt-2 text-slate-600">
+            This example customizes the header, message bubbles, empty state,
+            composer, input, and submit button icon.
+          </p>
+          <div className="mt-4">
+            <ChatBot.Root
+              mode="faq"
+              title="Im basic chatbot without styles"
+              faqItems={faqItems}
+              fallbackResponse="I do not know that yet. Please contact support for help."
+              // className=""
+            >
+              <ChatBot.Header 
+              // className="bg-purple-600 text-white"
+              >
+                <div
+                //  className="flex items-center gap-3"
+                 >
+                  <span 
+                  // className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20"
+                  >
+                    🤖
+                  </span>
+                  <div>
+                    <ChatBot.Title
+                    //  className="text-white" 
+                     />
+                    <p 
+                    // className="text-xs text-purple-100"
+                    >
+                      Compound component demo
+                    </p>
+                  </div>
+                </div>
+              </ChatBot.Header>
+              <ChatBot.Messages 
+              // className="bg-purple-50"
+              >
+                {(message) => (
+                  <ChatBot.MessageItem
+                    message={message}
+                    // className="items-end gap-2"
+                    // bubbleClassName={
+                    //   message.role === "bot"
+                    //     ? "bg-white text-purple-950"
+                    //     : "bg-purple-600 text-white"
+                    // }
+                  >
+                    <span 
+                    // className="mr-2"
+                    >
+                      {message.role === "bot" ? "🤖" : "🧑"}
+                    </span>
+                    {message.content}
+                  </ChatBot.MessageItem>
+                )}
+              </ChatBot.Messages>
+              <ChatBot.FaqOptions 
+              // className="border-purple-100 bg-purple-50/80"
+              >
+                {(item, option) => (
+                  <button
+                    {...option.getButtonProps({
+                      className:""
+                        // "flex min-w-40 flex-col rounded-2xl border border-purple-200 bg-white text-left text-purple-950 shadow-sm hover:bg-purple-100",
+                    })}
+                  >
+                    <span
+                    //  className="text-sm font-semibold"
+                     >💬 {item.question}</span>
+                  </button>
+                )}
+              </ChatBot.FaqOptions>
+              <ChatBot.Loading 
+              // className="text-purple-500"
+              >
+                Checking the FAQ...
+              </ChatBot.Loading>
+              <ChatBot.Error 
+              // className="text-rose-600"
+              >
+                The assistant hit a custom error state.
+              </ChatBot.Error>
+              <ChatBot.Composer 
+              // className="border-purple-100"
+              >
+                <ChatBot.Input 
+                // className="focus:border-purple-500 focus:ring-purple-100" 
+                />
+                <ChatBot.SubmitButton
+                  // className="bg-purple-600 hover:bg-purple-700"
+                  aria-label="Send message"
+                >
+                  ➤
+                </ChatBot.SubmitButton>
+              </ChatBot.Composer>
+            </ChatBot.Root>
+          </div>
+        </section>
+        <section className="rounded-2xl bg-white p-6 shadow">
           <h2 className="text-xl font-semibold">Provider mode API simulation</h2>
           <p className="mt-2 text-slate-600">
             This demo uses adapter/provider mode and simulates a successful API
@@ -282,7 +383,7 @@ function Demo() {
         fallbackResponse="I do not know that yet. Please contact support for help."
         launcherLabel="Open custom support chat"
         closeLabel="Minimize custom support chat"
-        // draggable
+        draggable
       >
         <ChatBotWidget.Panel className="chatbot-panel-enter  items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
 

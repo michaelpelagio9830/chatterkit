@@ -1,15 +1,32 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 
 const DEFAULT_LAUNCHER_SIZE = 56;
 const DEFAULT_MARGIN = 24;
 const DRAG_THRESHOLD_PX = 6;
 const DEFAULT_PANEL_WIDTH = 448;
 const DEFAULT_PANEL_HEIGHT = 584;
+const PANEL_ANCHOR_GAP = 12;
 const DEFAULT_POSITION = { x: DEFAULT_MARGIN, y: DEFAULT_MARGIN };
 
 interface Position {
   x: number;
   y: number;
+}
+
+interface PanelPlacement {
+  position: Position;
+  width: number;
+  height: number;
+  transformOrigin: string;
+  enterOffset: Position;
 }
 
 interface DragState {
@@ -42,48 +59,133 @@ export interface UseChatBotWidgetResult {
 }
 
 function getViewportSafeDefaultPosition() {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return DEFAULT_POSITION;
   }
 
   return {
-    x: Math.max(DEFAULT_MARGIN, window.innerWidth - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE),
-    y: Math.max(DEFAULT_MARGIN, window.innerHeight - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE),
+    x: Math.max(
+      DEFAULT_MARGIN,
+      window.innerWidth - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE,
+    ),
+    y: Math.max(
+      DEFAULT_MARGIN,
+      window.innerHeight - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE,
+    ),
   };
 }
 
 function clampPosition(position: Position) {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return position;
   }
 
   return {
     x: Math.min(
       Math.max(DEFAULT_MARGIN, position.x),
-      Math.max(DEFAULT_MARGIN, window.innerWidth - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE),
+      Math.max(
+        DEFAULT_MARGIN,
+        window.innerWidth - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE,
+      ),
     ),
     y: Math.min(
       Math.max(DEFAULT_MARGIN, position.y),
-      Math.max(DEFAULT_MARGIN, window.innerHeight - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE),
+      Math.max(
+        DEFAULT_MARGIN,
+        window.innerHeight - DEFAULT_MARGIN - DEFAULT_LAUNCHER_SIZE,
+      ),
     ),
   };
 }
 
-function clampPanelPosition(position: Position) {
-  if (typeof window === 'undefined') {
-    return position;
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(min, value), Math.max(min, max));
+}
+
+function getAvailablePanelSize() {
+  if (typeof window === "undefined") {
+    return { width: DEFAULT_PANEL_WIDTH, height: DEFAULT_PANEL_HEIGHT };
   }
 
-  const panelWidth = Math.min(DEFAULT_PANEL_WIDTH, window.innerWidth - DEFAULT_MARGIN * 2);
-  const panelHeight = Math.min(DEFAULT_PANEL_HEIGHT, window.innerHeight - DEFAULT_MARGIN * 2);
-
   return {
-    x: Math.min(Math.max(DEFAULT_MARGIN, position.x), Math.max(DEFAULT_MARGIN, window.innerWidth - panelWidth - DEFAULT_MARGIN)),
-    y: Math.min(Math.max(DEFAULT_MARGIN, position.y), Math.max(DEFAULT_MARGIN, window.innerHeight - panelHeight - DEFAULT_MARGIN)),
+    width: Math.min(
+      DEFAULT_PANEL_WIDTH,
+      Math.max(DEFAULT_LAUNCHER_SIZE, window.innerWidth - DEFAULT_MARGIN * 2),
+    ),
+    height: Math.min(
+      DEFAULT_PANEL_HEIGHT,
+      Math.max(DEFAULT_LAUNCHER_SIZE, window.innerHeight - DEFAULT_MARGIN * 2),
+    ),
   };
 }
 
-export function useChatBotWidget(options: UseChatBotWidgetOptions = {}): UseChatBotWidgetResult {
+function getSmartPanelPlacement(launcherPosition: Position): PanelPlacement {
+  const { width, height } = getAvailablePanelSize();
+
+  if (typeof window === "undefined") {
+    return {
+      position: launcherPosition,
+      width,
+      height,
+      transformOrigin: "top left",
+      enterOffset: { x: 0, y: 16 },
+    };
+  }
+
+  const launcherCenter = {
+    x: launcherPosition.x + DEFAULT_LAUNCHER_SIZE / 2,
+    y: launcherPosition.y + DEFAULT_LAUNCHER_SIZE / 2,
+  };
+  const spaceLeft = launcherPosition.x - DEFAULT_MARGIN - PANEL_ANCHOR_GAP;
+  const spaceRight =
+    window.innerWidth -
+    DEFAULT_MARGIN -
+    (launcherPosition.x + DEFAULT_LAUNCHER_SIZE + PANEL_ANCHOR_GAP);
+  const spaceAbove = launcherPosition.y - DEFAULT_MARGIN - PANEL_ANCHOR_GAP;
+  const spaceBelow =
+    window.innerHeight -
+    DEFAULT_MARGIN -
+    (launcherPosition.y + DEFAULT_LAUNCHER_SIZE + PANEL_ANCHOR_GAP);
+  const placeRight = spaceRight >= width || spaceRight >= spaceLeft;
+  const placeBelow = spaceBelow >= height || spaceBelow >= spaceAbove;
+  const preferredX = placeRight
+    ? launcherPosition.x + DEFAULT_LAUNCHER_SIZE + PANEL_ANCHOR_GAP
+    : launcherPosition.x - width - PANEL_ANCHOR_GAP;
+  const preferredY = placeBelow
+    ? launcherPosition.y + DEFAULT_LAUNCHER_SIZE + PANEL_ANCHOR_GAP
+    : launcherPosition.y - height - PANEL_ANCHOR_GAP;
+  const position = {
+    x: clamp(
+      preferredX,
+      DEFAULT_MARGIN,
+      window.innerWidth - width - DEFAULT_MARGIN,
+    ),
+    y: clamp(
+      preferredY,
+      DEFAULT_MARGIN,
+      window.innerHeight - height - DEFAULT_MARGIN,
+    ),
+  };
+  const origin = {
+    x: clamp(launcherCenter.x - position.x, 0, width),
+    y: clamp(launcherCenter.y - position.y, 0, height),
+  };
+
+  return {
+    position,
+    width,
+    height,
+    transformOrigin: `${Math.round(origin.x)}px ${Math.round(origin.y)}px`,
+    enterOffset: {
+      x: placeRight ? -12 : 12,
+      y: placeBelow ? -12 : 12,
+    },
+  };
+}
+
+export function useChatBotWidget(
+  options: UseChatBotWidgetOptions = {},
+): UseChatBotWidgetResult {
   const { defaultOpen = false, draggable = false } = options;
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [position, setPosition] = useState<Position>(DEFAULT_POSITION);
@@ -114,12 +216,17 @@ export function useChatBotWidget(options: UseChatBotWidgetOptions = {}): UseChat
       return undefined;
     }
 
-    const panelPosition = clampPanelPosition(position);
+    const placement = getSmartPanelPlacement(position);
 
     return {
-      left: `${panelPosition.x}px`,
-      top: `${panelPosition.y}px`,
-    };
+      left: `${placement.position.x}px`,
+      top: `${placement.position.y}px`,
+      maxWidth: `calc(100vw - ${DEFAULT_MARGIN * 2}px)`,
+      maxHeight: `calc(100vh - ${DEFAULT_MARGIN * 2}px)`,
+      transformOrigin: placement.transformOrigin,
+      "--chatbot-panel-enter-x": `${placement.enterOffset.x}px`,
+      "--chatbot-panel-enter-y": `${placement.enterOffset.y}px`,
+    } as CSSProperties;
   }, [draggable, position]);
 
   const open = useCallback(() => setIsOpen(true), []);

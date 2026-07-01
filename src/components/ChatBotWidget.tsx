@@ -112,7 +112,7 @@ function ChatBotWidgetRoot(props: ChatBotWidgetRootProps) {
     >
       <div
         className={cn(
-          "fixed inset-0 z-50 pointer-events-none font-sans",
+          "chatterkit-root fixed inset-0 z-50 pointer-events-none font-sans",
           className,
           widgetClassNames?.root,
         )}

@@ -1,5 +1,41 @@
 @tailwind components;
-@tailwind utilities;
+
+.chatterkit-root,
+.chatterkit-root *,
+.chatterkit-root *::before,
+.chatterkit-root *::after {
+  box-sizing: border-box;
+}
+
+.chatterkit-root :where(*) {
+  margin: 0;
+}
+
+.chatterkit-root :where(button, input, textarea, select) {
+  font: inherit;
+}
+
+.chatterkit-root :where(button) {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.chatterkit-root :where(ul, ol) {
+  list-style: none;
+  padding: 0;
+}
+
+.chatterkit-root :where(a) {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.chatterkit-root :where(img, svg, video, canvas) {
+  display: block;
+  max-width: 100%;
+}
 
 @keyframes chatbot-panel-enter {
   from {
@@ -76,3 +112,5 @@
     animation: none;
   }
 }
+
+@tailwind utilities;

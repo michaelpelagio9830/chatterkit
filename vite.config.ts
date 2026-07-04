@@ -9,6 +9,15 @@ export default defineConfig({
     globals: true,
     css: true,
   },
+  // server:{
+  //   proxy: {
+  //       '/api/local-chatbot': {
+  //         target: 'http://localhost:8000',
+  //         changeOrigin: true,
+  //         rewrite: (path) => path.replace(/^\/api\/local-chatbot/, '/chatbot'),
+  //       },
+  //   },
+  // },
   build: {
     lib: {
       entry: 'src/index.ts',

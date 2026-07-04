@@ -1,8 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ChatBot, ChatBotWidget } from "../src";
+import {
+  ChatBot,
+  ChatBotWidget,
+  createOpenApiProvider,
+  useLocalChatSession,
+} from "../src";
 import type { ChatProvider } from "../src";
-import { FaqModeExample, faqItems } from "./faq-mode";
+import {
+  FaqModeExample,
+  PersistentFaqSessionsExample,
+  faqItems,
+} from "./faq-mode";
 import "../src/style.css";
 
 const failingDemoProvider = {
@@ -27,7 +36,7 @@ const simulatedApiProvider = {
             `Simulated API response for "${apiRequest.message}". ` +
             `The request included ${apiRequest.previousMessages} message(s) in context.`,
         });
-      }, 1200);
+      }, 100200);
     });
 
     return {
@@ -40,7 +49,28 @@ const simulatedApiProvider = {
   },
 } satisfies ChatProvider;
 
+const fastApiProvider = createOpenApiProvider<
+  { input_text: string },
+  { response: string }
+>({
+  endpoint: "http://localhost:8000/chatbot",
+  mapRequest: (message) => ({
+    input_text: message.content,
+  }),
+  mapResponse: (response) => ({
+    content: response.response,
+    metadata: {
+      source: "fastapi-localhost",
+      raw: response,
+    },
+  }),
+});
+
 function Demo() {
+  const { messages, setMessages, sessionId } = useLocalChatSession(
+    "demo-fastapi-provider-chat-sesssion",
+  );
+
   return (
     <main className="min-h-screen h-svh bg-slate-100 p-8 text-slate-900">
       <div className="mx-auto max-w-5xl space-y-6">
@@ -52,6 +82,7 @@ function Demo() {
           </p>
         </div>
         <FaqModeExample />
+        <PersistentFaqSessionsExample />
         <section className="rounded-2xl bg-white p-6 shadow">
           <h2 className="text-xl font-semibold">Composed embedded chatbot</h2>
           <p className="mt-2 text-slate-600">
@@ -105,7 +136,9 @@ function Demo() {
                         "flex min-w-40 flex-col rounded-2xl border border-purple-200 bg-white text-left text-purple-950 shadow-sm hover:bg-purple-100",
                     })}
                   >
-                    <span className="text-sm font-semibold">💬 {item.question}</span>
+                    <span className="text-sm font-semibold">
+                      💬 {item.question}
+                    </span>
                   </button>
                 )}
               </ChatBot.FaqOptions>
@@ -141,22 +174,22 @@ function Demo() {
               fallbackResponse="I do not know that yet. Please contact support for help."
               // className=""
             >
-              <ChatBot.Header 
+              <ChatBot.Header
               // className="bg-purple-600 text-white"
               >
                 <div
                 //  className="flex items-center gap-3"
-                 >
-                  <span 
+                >
+                  <span
                   // className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20"
                   >
                     🤖
                   </span>
                   <div>
                     <ChatBot.Title
-                    //  className="text-white" 
-                     />
-                    <p 
+                    //  className="text-white"
+                    />
+                    <p
                     // className="text-xs text-purple-100"
                     >
                       Compound component demo
@@ -164,7 +197,7 @@ function Demo() {
                   </div>
                 </div>
               </ChatBot.Header>
-              <ChatBot.Messages 
+              <ChatBot.Messages
               // className="bg-purple-50"
               >
                 {(message) => (
@@ -177,7 +210,7 @@ function Demo() {
                     //     : "bg-purple-600 text-white"
                     // }
                   >
-                    <span 
+                    <span
                     // className="mr-2"
                     >
                       {message.role === "bot" ? "🤖" : "🧑"}
@@ -186,37 +219,39 @@ function Demo() {
                   </ChatBot.MessageItem>
                 )}
               </ChatBot.Messages>
-              <ChatBot.FaqOptions 
+              <ChatBot.FaqOptions
               // className="border-purple-100 bg-purple-50/80"
               >
                 {(item, option) => (
                   <button
                     {...option.getButtonProps({
-                      className:""
-                        // "flex min-w-40 flex-col rounded-2xl border border-purple-200 bg-white text-left text-purple-950 shadow-sm hover:bg-purple-100",
+                      className: "",
+                      // "flex min-w-40 flex-col rounded-2xl border border-purple-200 bg-white text-left text-purple-950 shadow-sm hover:bg-purple-100",
                     })}
                   >
                     <span
                     //  className="text-sm font-semibold"
-                     >💬 {item.question}</span>
+                    >
+                      💬 {item.question}
+                    </span>
                   </button>
                 )}
               </ChatBot.FaqOptions>
-              <ChatBot.Loading 
+              <ChatBot.Loading
               // className="text-purple-500"
               >
                 Checking the FAQ...
               </ChatBot.Loading>
-              <ChatBot.Error 
+              <ChatBot.Error
               // className="text-rose-600"
               >
                 The assistant hit a custom error state.
               </ChatBot.Error>
-              <ChatBot.Composer 
+              <ChatBot.Composer
               // className="border-purple-100"
               >
-                <ChatBot.Input 
-                // className="focus:border-purple-500 focus:ring-purple-100" 
+                <ChatBot.Input
+                // className="focus:border-purple-500 focus:ring-purple-100"
                 />
                 <ChatBot.SubmitButton
                   // className="bg-purple-600 hover:bg-purple-700"
@@ -229,7 +264,9 @@ function Demo() {
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
-          <h2 className="text-xl font-semibold">Provider mode API simulation</h2>
+          <h2 className="text-xl font-semibold">
+            Provider mode API simulation
+          </h2>
           <p className="mt-2 text-slate-600">
             This demo uses adapter/provider mode and simulates a successful API
             request. Send any message to see the loading state and delayed API
@@ -265,7 +302,8 @@ function Demo() {
                       onClick={scrollToBottom}
                       className="rounded-full bg-sky-600 px-4 py-1.5 text-xs font-semibold text-white shadow-lg shadow-sky-200 transition hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2"
                     >
-                      {unreadCount} new API response{unreadCount > 1 ? "s" : ""} ↓
+                      {unreadCount} new API response{unreadCount > 1 ? "s" : ""}{" "}
+                      ↓
                     </button>
                   )}
                 >
@@ -289,7 +327,10 @@ function Demo() {
                   <div className="flex justify-start">
                     <div className="rounded-2xl rounded-bl-sm bg-white px-4 py-3 shadow-sm ring-1 ring-sky-100">
                       <span className="sr-only">Calling simulated API...</span>
-                      <div className="flex items-center gap-1.5" aria-hidden="true">
+                      <div
+                        className="flex items-center gap-1.5"
+                        aria-hidden="true"
+                      >
                         <span className="chatbot-typing-dot bg-sky-400" />
                         <span className="chatbot-typing-dot bg-sky-400 [animation-delay:150ms]" />
                         <span className="chatbot-typing-dot bg-sky-400 [animation-delay:300ms]" />
@@ -308,6 +349,95 @@ function Demo() {
                 />
                 <ChatBot.SubmitButton
                   className="bg-sky-600 hover:bg-sky-700"
+                  aria-label="Send message"
+                >
+                  Send
+                </ChatBot.SubmitButton>
+              </ChatBot.Composer>
+            </ChatBot.Root>
+          </div>
+        </section>
+        <section className="rounded-2xl bg-white p-6 shadow">
+          <h2 className="text-xl font-semibold">FastAPI provider chatbot</h2>
+          <p className="mt-2 text-slate-600">
+            This adapter-mode demo calls your local FastAPI chatbot at{" "}
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-sm">
+              POST http://localhost:8000/chatbot
+            </code>{" "}
+            using the request shape <code>{"{ input_text: string }"}</code> and
+            response shape <code>{"{ response: string }"}</code>.
+          </p>
+          <div className="mt-4">
+            <ChatBot.Root
+              mode="adapter"
+              title="Local FastAPI Assistant"
+              provider={fastApiProvider}
+              initialMessages={messages}
+              onMessagesChange={setMessages}
+              metadata={{ demo: "fastapi-local-provider", sessionId }}
+              errorLabel="The FastAPI chatbot request failed. Check that localhost:8000 is running and allows CORS."
+              className="h-[30rem] border-emerald-100 shadow-xl"
+            >
+              <ChatBot.Header className="bg-emerald-600 text-white">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
+                    🧠
+                  </span>
+                  <div>
+                    <ChatBot.Title className="text-white" />
+                    <p className="text-xs text-emerald-100">
+                      Real adapter provider connected to FastAPI
+                    </p>
+                  </div>
+                </div>
+              </ChatBot.Header>
+              <div className="flex flex-1 flex-col gap-3 overflow-y-auto bg-emerald-50 p-4">
+                <ChatBot.Messages className="flex-none overflow-visible bg-transparent p-0">
+                  {(message) => (
+                    <ChatBot.MessageItem
+                      message={message}
+                      bubbleClassName={
+                        message.role === "bot"
+                          ? "bg-white text-emerald-950"
+                          : "bg-emerald-600 text-white"
+                      }
+                    >
+                      {/* <span className="mr-2">
+                        {message.role === "bot" ? "🧠" : "🧑"}
+                      </span> */}
+                      {message.content}
+                    </ChatBot.MessageItem>
+                  )}
+                </ChatBot.Messages>
+                <ChatBot.Loading className="p-0">
+                  <div className="flex justify-start">
+                    <div className="rounded-2xl rounded-bl-sm bg-white px-4 py-3 shadow-sm ring-1 ring-emerald-100">
+                      <span className="sr-only">
+                        Calling FastAPI chatbot...
+                      </span>
+                      <div
+                        className="flex items-center gap-1.5"
+                        aria-hidden="true"
+                      >
+                        <span className="chatbot-typing-dot bg-emerald-400" />
+                        <span className="chatbot-typing-dot bg-emerald-400 [animation-delay:150ms]" />
+                        <span className="chatbot-typing-dot bg-emerald-400 [animation-delay:300ms]" />
+                      </div>
+                    </div>
+                  </div>
+                </ChatBot.Loading>
+              </div>
+              <ChatBot.Error className="px-4 pb-2 text-rose-600">
+                The FastAPI chatbot request failed. Check that localhost:8000 is
+                running and allows CORS from the Vite dev server.
+              </ChatBot.Error>
+              <ChatBot.Composer className="border-emerald-100">
+                <ChatBot.Input
+                  className="focus:border-emerald-500 focus:ring-emerald-100"
+                  placeholder="Ask your local FastAPI chatbot..."
+                />
+                <ChatBot.SubmitButton
+                  className="bg-emerald-600 hover:bg-emerald-700"
                   aria-label="Send message"
                 >
                   Send
@@ -386,7 +516,6 @@ function Demo() {
         draggable
       >
         <ChatBotWidget.Panel className="chatbot-panel-enter  items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
-
           <ChatBotWidget.ChatBot className="h-[30rem] rounded-none border-0 shadow-none">
             <ChatBot.Header className="bg-purple-600 text-white">
               <div className="flex items-center justify-between gap-3">

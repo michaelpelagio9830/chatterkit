@@ -27,6 +27,92 @@ describe('ChatBot', () => {
     expect(await screen.findByText('Pricing is flexible.')).toBeInTheDocument();
   });
 
+  it('renders markdown message content with safe links and without executing raw HTML', async () => {
+    render(
+      <ChatBot
+        mode="faq"
+        faqItems={[
+          {
+            question: 'Markdown',
+            answer:
+              '## Markdown help\n\nUse **bold** text, `inline code`, and visit https://example.com.\n\n<script>alert("xss")</script>',
+          },
+        ]}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText('Message'), {
+      target: { value: 'Markdown' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(await screen.findByRole('heading', { name: 'Markdown help' })).toBeInTheDocument();
+    expect(screen.getByText('bold').tagName).toBe('STRONG');
+    expect(screen.getByText('inline code').tagName).toBe('CODE');
+
+    const urlLink = screen.getByRole('link', { name: 'https://example.com' });
+    expect(urlLink).toHaveAttribute('href', 'https://example.com');
+    expect(urlLink).toHaveAttribute('target', '_blank');
+    expect(urlLink).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(document.querySelector('script')).not.toBeInTheDocument();
+  });
+
+  it('preserves custom message children without markdown parsing arbitrary React nodes', async () => {
+    render(
+      <ChatBot.Root
+        mode="faq"
+        faqItems={[{ question: 'Custom children', answer: '**Not parsed**' }]}
+      >
+        <ChatBot.Messages>
+          {(message) => (
+            <ChatBot.MessageItem message={message}>
+              <span data-testid={`custom-${message.role}`}>{message.content}</span>
+            </ChatBot.MessageItem>
+          )}
+        </ChatBot.Messages>
+        <ChatBot.Composer />
+      </ChatBot.Root>,
+    );
+
+    fireEvent.change(screen.getByLabelText('Message'), {
+      target: { value: 'Custom children' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    const botMessage = await screen.findByTestId('custom-bot');
+    expect(botMessage).toHaveTextContent('**Not parsed**');
+    expect(botMessage.querySelector('strong')).not.toBeInTheDocument();
+  });
+
+  it('renders direct string children as markdown in custom message layouts', async () => {
+    render(
+      <ChatBot.Root
+        mode="faq"
+        faqItems={[{ question: 'Direct markdown children', answer: '**Parsed child** with `code`' }]}
+      >
+        <ChatBot.Messages>
+          {(message) => (
+            <ChatBot.MessageItem message={message}>
+              <span data-testid={`icon-${message.role}`}>{message.role === 'bot' ? '🤖' : '🧑'}</span>
+              {message.content}
+            </ChatBot.MessageItem>
+          )}
+        </ChatBot.Messages>
+        <ChatBot.Composer />
+      </ChatBot.Root>,
+    );
+
+    fireEvent.change(screen.getByLabelText('Message'), {
+      target: { value: 'Direct markdown children' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(await screen.findByText('Parsed child')).toHaveTextContent('Parsed child');
+    expect(screen.getByText('Parsed child').tagName).toBe('STRONG');
+    expect(screen.getByText('code').tagName).toBe('CODE');
+    expect(screen.getByTestId('icon-bot')).toHaveTextContent('🤖');
+  });
+
   it('renders clickable FAQ option badges and submits the selected question', async () => {
     render(
       <ChatBot
@@ -99,11 +185,7 @@ describe('ChatBot', () => {
     expect(screen.getByTestId('icon-user')).toHaveTextContent('🧑');
     expect(screen.getByTestId('icon-bot')).toHaveTextContent('🤖');
 
-    const urlLink = screen.getByRole('link', { name: 'www.example.com' });
-    expect(urlLink).toHaveAttribute('href', 'https://www.example.com');
-
-    const emailLink = screen.getByRole('link', { name: 'support@example.com' });
-    expect(emailLink).toHaveAttribute('href', 'mailto:support@example.com');
+    expect(screen.getByText('Hi there! Visit www.example.com or email support@example.com.')).toBeInTheDocument();
   });
 
   it('supports fully custom FAQ option buttons with helper props', async () => {

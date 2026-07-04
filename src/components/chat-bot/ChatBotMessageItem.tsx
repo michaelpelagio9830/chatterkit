@@ -1,5 +1,5 @@
 import { cn } from '../../utils/cn';
-import { linkify, linkifyNode } from '../../utils/linkify';
+import { ChatMarkdown, markdownNode } from '../../utils/markdown';
 import { useChatBotContext } from './ChatBot.context';
 import type { ChatBotMessageItemProps } from './ChatBot.types';
 
@@ -19,7 +19,7 @@ export function ChatBotMessageItem({ message, children, className, bubbleClassNa
           bubbleClassName,
         )}
       >
-        {children != null ? linkifyNode(children) : linkify(message.content)}
+        {children != null ? markdownNode(children) : <ChatMarkdown content={message.content} />}
       </div>
     </li>
   );

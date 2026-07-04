@@ -1,6 +1,6 @@
 import type { ChatBotClassNames, ChatMessage } from '../types';
 import { cn } from '../utils/cn';
-import { linkify } from '../utils/linkify';
+import { ChatMarkdown } from '../utils/markdown';
 
 export interface MessageItemProps {
   message: ChatMessage;
@@ -21,7 +21,7 @@ export function MessageItem({ message, classNames }: MessageItemProps) {
           isUser ? classNames?.userMessage : classNames?.botMessage,
         )}
       >
-        {linkify(message.content)}
+        <ChatMarkdown content={message.content} />
       </div>
     </li>
   );

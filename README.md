@@ -1,9 +1,16 @@
 # Chatterkit
 
-A reusable React chatbot component designed for two MVP modes:
+A reusable React chatbot component library for building embeddable support bots, FAQ assistants, and adapter-backed AI chat interfaces.
+
+Chatterkit currently supports:
 
 - **FAQ mode** for predefined question/answer data.
 - **Adapter mode** for developer-provided external services, including OpenAPI-compatible LLM backends.
+- **Floating widgets** with optional draggable launchers and smart panel positioning.
+- **Composable UI slots** for custom headers, message lists, FAQ buttons, state views, and composers.
+- **Safe markdown chat bubbles** with GFM support, autolinks, and external-link protections.
+- **Session helpers** for externally owned message history and browser storage persistence.
+- **No-preflight package CSS** so host applications can import Chatterkit styles without Tailwind global reset side effects.
 
 The recommended stack is **React + TypeScript + Tailwind CSS + Vite + Vitest**.
 
@@ -21,6 +28,28 @@ import 'chatterkit/style.css';
 ```
 
 The package stylesheet is built without Tailwind preflight/global reset output, so importing `chatterkit/style.css` avoids applying Tailwind's page-level resets to host applications.
+
+## Markdown chat bubbles
+
+String message content renders as safe markdown in the built-in chat bubbles. FAQ answers, adapter/provider responses, fallback responses, and user messages can include common markdown such as:
+
+- headings (`## Help`)
+- emphasis and strong text (`_emphasis_`, `**strong**`)
+- inline code and fenced code blocks
+- ordered and unordered lists
+- blockquotes
+- markdown links and plain URL/email autolinks
+
+```ts
+const faqItems: FaqItem[] = [
+  {
+    question: 'How do I install it?',
+    answer: 'Run `npm install chatterkit`, then import **chatterkit/style.css**. See https://example.com/docs.',
+  },
+];
+```
+
+Raw HTML embedded in message strings is not executed. Links are rendered with safe external-link behavior (`target="_blank"` and `rel="noopener noreferrer"` for external URLs). If you pass custom React `children` to `ChatBot.MessageItem`, Chatterkit preserves those children instead of markdown-parsing arbitrary React nodes.
 
 ## FAQ mode
 
@@ -223,6 +252,25 @@ Available `ChatBot` slots:
 
 Use `classNames` for quick styling overrides. Use compound components when you need to change structure, icons, avatars, custom message rendering, or custom state UI.
 
+### New message indicator
+
+`ChatBot.Messages` tracks whether the user is near the bottom of the scrollable message list. When a bot/system message arrives while the user is reading older messages, Chatterkit shows a small default "new message" jump button. You can replace it with your own React node or render function:
+
+```tsx
+<ChatBot.Messages
+  newMessageIndicator={({ unreadCount, latestMessage, scrollToBottom }) => (
+    <button
+      type="button"
+      className="rounded-full bg-purple-600 px-3 py-1 text-xs font-medium text-white shadow-lg"
+      onClick={scrollToBottom}
+    >
+      {unreadCount} new message{unreadCount === 1 ? '' : 's'}
+      {latestMessage ? ` from ${latestMessage.role}` : ''}
+    </button>
+  )}
+/>
+```
+
 ### ChatBot slot nesting rules
 
 `ChatBot.Header`, `ChatBot.Messages`, `ChatBot.Composer`, and the other `ChatBot.*` slots require chatbot context. They must be rendered inside either:
@@ -332,6 +380,67 @@ For production LLM/OpenAPI integrations, avoid exposing provider API keys direct
 - forwards safe requests to the external service,
 - maps the external response back to the chatbot provider contract.
 
+## Session helpers
+
+Chatterkit can manage message state internally, but applications that need persistence, reset controls, or externally owned history can use the exported session hooks.
+
+Use `useChatSession` for in-memory state owned by your app:
+
+```tsx
+import { ChatBot, useChatSession, type ChatMessage } from 'chatterkit';
+
+const greeting: ChatMessage = {
+  id: 'welcome',
+  role: 'bot',
+  content: 'Hi! How can I help today?',
+  createdAt: new Date(),
+};
+
+export function SessionBackedBot() {
+  const session = useChatSession({
+    sessionId: 'support-session',
+    initialMessages: [greeting],
+  });
+
+  return (
+    <ChatBot
+      mode="faq"
+      faqItems={faqItems}
+      initialMessages={session.messages}
+      onMessagesChange={session.setMessages}
+    />
+  );
+}
+```
+
+Use `useLocalChatSession` to restore and persist chat history through `localStorage` or `sessionStorage`:
+
+```tsx
+import { ChatBot, useLocalChatSession } from 'chatterkit';
+
+export function PersistentSupportBot() {
+  const session = useLocalChatSession('support-widget', {
+    storage: 'localStorage',
+  });
+
+  return (
+    <>
+      <ChatBot
+        mode="faq"
+        faqItems={faqItems}
+        initialMessages={session.messages}
+        onMessagesChange={session.setMessages}
+      />
+      <button type="button" onClick={session.clearMessages}>
+        Clear chat
+      </button>
+    </>
+  );
+}
+```
+
+The package also exports `serializeChatMessages` and `deserializeChatMessages` for safely converting `Date`-based `ChatMessage` objects to and from storage-friendly JSON shapes.
+
 ## Tailwind setup
 
 The package ships default Tailwind-generated CSS through `chatterkit/style.css`. This stylesheet is a no-preflight package stylesheet: it includes Chatterkit component utilities and Chatterkit-owned animation helpers, but intentionally excludes Tailwind preflight/global reset rules that would target host app elements such as `html`, `body`, `button`, or `input`.
@@ -399,6 +508,20 @@ npm test
 npm run build
 ```
 
+## Contributing
+
+Contributions are welcome and encouraged! Chatterkit is open to community feedback, bug reports, feature requests, documentation improvements, and pull requests.
+
+If you would like to contribute, please feel free to open an issue or pull request. You can also contact me directly by email at [michaelpelagio9830@gmail.com](mailto:michaelpelagio9830@gmail.com) for questions, ideas, or collaboration opportunities.
+
+Before submitting code changes, please run the local validation commands when applicable:
+
+```bash
+npm test
+npm run typecheck
+npm run build
+```
+
 ## Current MVP boundaries
 
-The first implementation focuses on explicit `faq` and `adapter` modes. Hybrid FAQ-to-adapter fallback, streaming responses, persistence, and package splitting can be added later.
+The first implementation focuses on explicit `faq` and `adapter` modes, composable chatbot/widget UI, markdown rendering, scoped package CSS, and app-owned session helpers. Hybrid FAQ-to-adapter fallback, streaming responses, server-backed persistence adapters, and package splitting can be added later.

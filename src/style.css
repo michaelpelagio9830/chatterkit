@@ -1,13 +1,10 @@
 @tailwind components;
 
-.chatterkit-root,
-.chatterkit-root *,
-.chatterkit-root *::before,
-.chatterkit-root *::after {
+:where(.chatterkit-root, .chatterkit-root *, .chatterkit-root *::before, .chatterkit-root *::after) {
   box-sizing: border-box;
 }
 
-.chatterkit-root :where(*) {
+:where(.chatterkit-root *) {
   margin: 0;
 }
 

@@ -21,9 +21,25 @@ const forbiddenPreflightPatterns = [
     name: 'Tailwind form element reset',
     pattern: /(?:^|})(?:button,input,optgroup,select,textarea|button,input)[^{}]*\{[^{}]*(?:font-family:inherit|font-feature-settings:inherit|font-size:100%)/,
   },
+  {
+    name: 'class-specific ChatterKit box-sizing reset',
+    pattern: /\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*::before,\.chatterkit-root \*::after\{box-sizing:border-box\}/,
+  },
+  {
+    name: 'class-specific ChatterKit margin reset',
+    pattern: /\.chatterkit-root :where\(\*\)\{margin:0\}/,
+  },
 ];
 
 const requiredChatterkitPatterns = [
+  {
+    name: 'zero-specificity scoped box-sizing reset',
+    pattern: /:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*:{1,2}before,\.chatterkit-root \*:{1,2}after\)\{box-sizing:border-box\}/,
+  },
+  {
+    name: 'zero-specificity scoped margin reset',
+    pattern: /:where\(\.chatterkit-root \*\)\{margin:0\}/,
+  },
   {
     name: 'component flex utility output',
     pattern: /\.flex\{display:flex\}/,

@@ -33,12 +33,28 @@ const forbiddenPreflightPatterns = [
 
 const requiredChatterkitPatterns = [
   {
+    name: 'cascade layer order declaration',
+    pattern: /@layer base,base\.chatterkit,components,components\.chatterkit,utilities;/,
+  },
+  {
+    name: 'base ChatterKit sublayer wrapping scoped reset output',
+    pattern: /@layer base\.chatterkit\{\s*:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*:{1,2}before,\.chatterkit-root \*:{1,2}after\)\{box-sizing:border-box\}/,
+  },
+  {
+    name: 'components ChatterKit sublayer wrapping ChatterKit helpers',
+    pattern: /@layer components\.chatterkit\{.*\.chatbot-panel-enter\{[^{}]*animation:chatbot-panel-enter/s,
+  },
+  {
     name: 'zero-specificity scoped box-sizing reset',
     pattern: /:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*:{1,2}before,\.chatterkit-root \*:{1,2}after\)\{box-sizing:border-box\}/,
   },
   {
     name: 'zero-specificity scoped margin reset',
     pattern: /:where\(\.chatterkit-root \*\)\{margin:0\}/,
+  },
+  {
+    name: 'zero-specificity scoped form reset',
+    pattern: /:where\(\.chatterkit-root button,\.chatterkit-root input,\.chatterkit-root textarea,\.chatterkit-root select\)\{font:inherit\}/,
   },
   {
     name: 'component flex utility output',

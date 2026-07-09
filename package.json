@@ -1,7 +1,7 @@
 {
   "name": "chatterkit",
-  "version": "0.1.12",
-  "description": "A modular React chat widget kit with FAQ and adapter modes.",
+  "version": "1.0.0",
+  "description": "A React TypeScript chatbot and chat widget library for embeddable FAQ bots, AI chat, and support assistants.",
   "type": "module",
   "license": "MIT",
   "main": "./dist/index.cjs",
@@ -14,6 +14,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michaelpelagio9830/chatterkit.git"
+  },
+  "homepage": "https://github.com/michaelpelagio9830/chatterkit#readme",
+  "bugs": {
+    "url": "https://github.com/michaelpelagio9830/chatterkit/issues"
   },
   "sideEffects": [
     "./dist/style.css",
@@ -38,9 +42,18 @@
   "keywords": [
     "chatbot",
     "react",
+    "react-chatbot",
+    "react-chat-widget",
+    "chat-widget",
+    "chatbot-widget",
     "tailwind",
+    "typescript",
     "component",
     "faq",
+    "faq-bot",
+    "ai-chat",
+    "support-widget",
+    "customer-support",
     "openapi"
   ],
   "peerDependencies": {

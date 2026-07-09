@@ -1,6 +1,8 @@
 # Chatterkit
 
-A reusable React chatbot component library for building embeddable support bots, FAQ assistants, and adapter-backed AI chat interfaces.
+Chatterkit is a reusable **React TypeScript chatbot and chat widget library** for building embeddable support bots, FAQ assistants, customer-support widgets, and adapter-backed AI chat interfaces.
+
+Use Chatterkit when you need a customizable React chatbot component for FAQ bots, AI support assistants, OpenAPI-compatible chat providers, or floating chat widgets in a Vite, Tailwind CSS, or TypeScript application.
 
 Chatterkit currently supports:
 

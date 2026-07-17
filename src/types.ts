@@ -87,8 +87,8 @@ export type FaqResolver = (
   faqItems: FaqItem[],
 ) => MaybePromise<FaqResolverResult>;
 
-/** Tailwind/className overrides for the built-in ChatBot UI slots. */
-export interface ChatBotClassNames {
+/** Tailwind/className overrides for the built-in ChatBox UI slots. */
+export interface ChatBoxClassNames {
   /** Class for the root chat container. */
   root?: string;
   /** Class for the header wrapper. */
@@ -123,7 +123,10 @@ export interface ChatBotClassNames {
   empty?: string;
 }
 
-/** Tailwind/className overrides for ChatBotWidget preset slots. */
+/** Backwards-compatible alias for the previous ChatBot naming. */
+export type ChatBotClassNames = ChatBoxClassNames;
+
+/** Tailwind/className overrides for ChatBoxWidget/ChatBotWidget preset slots. */
 export interface ChatBotWidgetClassNames {
   /** Class for the fixed widget root overlay. */
   root?: string;
@@ -133,26 +136,29 @@ export interface ChatBotWidgetClassNames {
   panel?: string;
   /** Class for the panel close/minimize button. */
   closeButton?: string;
-  /** Class passed to the embedded ChatBot instance. */
+  /** Class passed to the embedded ChatBox instance. */
   chatBot?: string;
 }
 
-/** Shared props accepted by ChatBot and the ChatBotWidget's embedded chatbot. */
-export interface ChatBotBaseProps {
+/** Preferred ChatBox-aligned alias for widget slot class overrides. */
+export type ChatBoxWidgetClassNames = ChatBotWidgetClassNames;
+
+/** Shared props accepted by ChatBox and the ChatBotWidget's embedded chatbox. */
+export interface ChatBoxBaseProps {
   /** Messages rendered when the chatbot first mounts. Useful for greetings or restored history. */
   initialMessages?: ChatMessage[];
   /** Custom metadata passed to FAQ resolvers and adapter providers on every request. */
   metadata?: Metadata;
-  /** Accessible region label and default header title. Defaults to `Chatbot`. */
+  /** Accessible region label and default header title. Defaults to `Chat`. */
   title?: string;
   /** Placeholder text shown in the message input. */
   placeholder?: string;
   /** Disables message input, submit button, and FAQ option buttons. */
   disabled?: boolean;
-  /** Class for the root ChatBot container. */
+  /** Class for the root ChatBox container. */
   className?: string;
-  /** Fine-grained class overrides for built-in ChatBot slots. */
-  classNames?: ChatBotClassNames;
+  /** Fine-grained class overrides for built-in ChatBox slots. */
+  classNames?: ChatBoxClassNames;
   /** Custom empty state shown before any messages exist. */
   emptyState?: ReactNode;
   /** Text displayed while a response is being generated. */
@@ -171,7 +177,10 @@ export interface ChatBotBaseProps {
   onError?: (error: Error) => void;
 }
 
-/** Props required when ChatBot runs in local FAQ matching mode. */
+/** Backwards-compatible alias for the previous ChatBot naming. */
+export type ChatBotBaseProps = ChatBoxBaseProps;
+
+/** Props required when ChatBox runs in local FAQ matching mode. */
 export interface FaqModeOptions {
   /** Enables FAQ mode, which matches user input against predefined FAQ items. */
   mode: 'faq';
@@ -185,7 +194,7 @@ export interface FaqModeOptions {
   provider?: never;
 }
 
-/** Props required when ChatBot delegates responses to an external adapter provider. */
+/** Props required when ChatBox delegates responses to an external adapter provider. */
 export interface AdapterModeOptions {
   /** Enables adapter mode, which sends messages to the supplied provider. */
   mode: 'adapter';
@@ -199,14 +208,17 @@ export interface AdapterModeOptions {
   faqResolver?: never;
 }
 
-/** Props for the `ChatBot` preset component and `ChatBot.Root` compound component. */
-export type ChatBotProps = ChatBotBaseProps & {
-  /** Optional compound slot content. If omitted, the default chatbot layout is rendered. */
+/** Props for the `ChatBox` preset component and `ChatBox.Root` compound component. */
+export type ChatBoxProps = ChatBoxBaseProps & {
+  /** Optional compound slot content. If omitted, the default chatbox layout is rendered. */
   children?: ReactNode;
 } & (FaqModeOptions | AdapterModeOptions);
 
-/** Props for configuring the floating ChatBotWidget container and embedded chatbot. */
-export interface ChatBotWidgetBaseProps extends Omit<ChatBotBaseProps, 'className'> {
+/** Backwards-compatible alias for the previous ChatBot naming. */
+export type ChatBotProps = ChatBoxProps;
+
+/** Props for configuring the floating ChatBoxWidget/ChatBotWidget container and embedded chatbox. */
+export interface ChatBotWidgetBaseProps extends Omit<ChatBoxBaseProps, 'className'> {
   /** Opens the widget panel on initial render. Defaults to `false`. */
   defaultOpen?: boolean;
   /** Allows dragging the launcher and positions the open panel near the dragged location. */
@@ -225,23 +237,36 @@ export interface ChatBotWidgetBaseProps extends Omit<ChatBotBaseProps, 'classNam
 
 export type ChatBotWidgetProps = ChatBotWidgetBaseProps & (FaqModeOptions | AdapterModeOptions);
 
+/** Preferred ChatBox-aligned alias for floating widget props. */
+export type ChatBoxWidgetProps = ChatBotWidgetProps;
+
 export type ChatBotWidgetRootProps = ChatBotWidgetProps & {
   children: ReactNode;
 };
 
+export type ChatBoxWidgetRootProps = ChatBotWidgetRootProps;
+
 export type ChatBotWidgetLauncherProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
+
+export type ChatBoxWidgetLauncherProps = ChatBotWidgetLauncherProps;
 
 export type ChatBotWidgetPanelProps = HTMLAttributes<HTMLDivElement>;
 
+export type ChatBoxWidgetPanelProps = ChatBotWidgetPanelProps;
+
 export type ChatBotWidgetCloseButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
-export type ChatBotWidgetChatBotProps = Pick<ChatBotBaseProps, 'className' | 'classNames'> &
-  Omit<HTMLAttributes<HTMLElement>, keyof ChatBotBaseProps> & {
+export type ChatBoxWidgetCloseButtonProps = ChatBotWidgetCloseButtonProps;
+
+export type ChatBotWidgetChatBotProps = Pick<ChatBoxBaseProps, 'className' | 'classNames'> &
+  Omit<HTMLAttributes<HTMLElement>, keyof ChatBoxBaseProps> & {
     children?: ReactNode;
   };
 
+export type ChatBoxWidgetChatBoxProps = ChatBotWidgetChatBotProps;
+
 export type UseChatbotOptions = Pick<
-  ChatBotBaseProps,
+  ChatBoxBaseProps,
   'initialMessages' | 'metadata' | 'onMessagesChange' | 'onError'
 > &
   (FaqModeOptions | AdapterModeOptions);

@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { ChatBot } from './ChatBot';
+import { ChatBox } from './ChatBot';
 
-describe('ChatBot', () => {
+describe('ChatBox', () => {
   it('renders the default chatbot UI', () => {
-    render(<ChatBot mode="faq" faqItems={[]} title="Support bot" />);
+    render(<ChatBox mode="faq" faqItems={[]} title="Support bot" />);
 
     expect(screen.getByRole('region', { name: 'Support bot' })).toBeInTheDocument();
     expect(screen.getByLabelText('Message')).toBeInTheDocument();
@@ -13,7 +13,7 @@ describe('ChatBot', () => {
 
   it('submits messages through the composer and displays FAQ responses', async () => {
     render(
-      <ChatBot
+      <ChatBox
         mode="faq"
         faqItems={[{ question: 'What is your pricing?', answer: 'Pricing is flexible.' }]}
       />,
@@ -29,7 +29,7 @@ describe('ChatBot', () => {
 
   it('renders markdown message content with safe links and without executing raw HTML', async () => {
     render(
-      <ChatBot
+      <ChatBox
         mode="faq"
         faqItems={[
           {
@@ -59,19 +59,19 @@ describe('ChatBot', () => {
 
   it('preserves custom message children without markdown parsing arbitrary React nodes', async () => {
     render(
-      <ChatBot.Root
+      <ChatBox.Root
         mode="faq"
         faqItems={[{ question: 'Custom children', answer: '**Not parsed**' }]}
       >
-        <ChatBot.Messages>
+        <ChatBox.Messages>
           {(message) => (
-            <ChatBot.MessageItem message={message}>
+            <ChatBox.MessageItem message={message}>
               <span data-testid={`custom-${message.role}`}>{message.content}</span>
-            </ChatBot.MessageItem>
+            </ChatBox.MessageItem>
           )}
-        </ChatBot.Messages>
-        <ChatBot.Composer />
-      </ChatBot.Root>,
+        </ChatBox.Messages>
+        <ChatBox.Composer />
+      </ChatBox.Root>,
     );
 
     fireEvent.change(screen.getByLabelText('Message'), {
@@ -86,20 +86,20 @@ describe('ChatBot', () => {
 
   it('renders direct string children as markdown in custom message layouts', async () => {
     render(
-      <ChatBot.Root
+      <ChatBox.Root
         mode="faq"
         faqItems={[{ question: 'Direct markdown children', answer: '**Parsed child** with `code`' }]}
       >
-        <ChatBot.Messages>
+        <ChatBox.Messages>
           {(message) => (
-            <ChatBot.MessageItem message={message}>
+            <ChatBox.MessageItem message={message}>
               <span data-testid={`icon-${message.role}`}>{message.role === 'bot' ? '🤖' : '🧑'}</span>
               {message.content}
-            </ChatBot.MessageItem>
+            </ChatBox.MessageItem>
           )}
-        </ChatBot.Messages>
-        <ChatBot.Composer />
-      </ChatBot.Root>,
+        </ChatBox.Messages>
+        <ChatBox.Composer />
+      </ChatBox.Root>,
     );
 
     fireEvent.change(screen.getByLabelText('Message'), {
@@ -115,7 +115,7 @@ describe('ChatBot', () => {
 
   it('renders clickable FAQ option badges and submits the selected question', async () => {
     render(
-      <ChatBot
+      <ChatBox
         mode="faq"
         title="Support bot"
         showFaqOptions
@@ -142,33 +142,33 @@ describe('ChatBot', () => {
 
   it('supports compound customization with a custom submit icon and render-prop messages', async () => {
     render(
-      <ChatBot.Root
+      <ChatBox.Root
         mode="faq"
         title="Composed bot"
         faqItems={[{ question: 'Hello', answer: 'Hi there! Visit www.example.com or email support@example.com.' }]}
       >
-        <ChatBot.Header className="custom-header">
+        <ChatBox.Header className="custom-header">
           <span>🤖</span>
-          <ChatBot.Title className="custom-title" />
-        </ChatBot.Header>
-        <ChatBot.Messages className="custom-messages">
+          <ChatBox.Title className="custom-title" />
+        </ChatBox.Header>
+        <ChatBox.Messages className="custom-messages">
           {(message) => (
-            <ChatBot.MessageItem message={message} className={`message-${message.role}`} bubbleClassName="custom-bubble">
+            <ChatBox.MessageItem message={message} className={`message-${message.role}`} bubbleClassName="custom-bubble">
               <span data-testid={`icon-${message.role}`}>{message.role === 'user' ? '🧑' : '🤖'}</span>
               <span>{message.content}</span>
-            </ChatBot.MessageItem>
+            </ChatBox.MessageItem>
           )}
-        </ChatBot.Messages>
-        <ChatBot.FaqOptions className="custom-options" label="Quick picks">
+        </ChatBox.Messages>
+        <ChatBox.FaqOptions className="custom-options" label="Quick picks">
           {(item) => `Ask: ${item.question}`}
-        </ChatBot.FaqOptions>
-        <ChatBot.Loading>Loading custom...</ChatBot.Loading>
-        <ChatBot.Error>Custom error</ChatBot.Error>
-        <ChatBot.Composer className="custom-composer">
-          <ChatBot.Input className="custom-input" />
-          <ChatBot.SubmitButton className="custom-submit">➤</ChatBot.SubmitButton>
-        </ChatBot.Composer>
-      </ChatBot.Root>,
+        </ChatBox.FaqOptions>
+        <ChatBox.Loading>Loading custom...</ChatBox.Loading>
+        <ChatBox.Error>Custom error</ChatBox.Error>
+        <ChatBox.Composer className="custom-composer">
+          <ChatBox.Input className="custom-input" />
+          <ChatBox.SubmitButton className="custom-submit">➤</ChatBox.SubmitButton>
+        </ChatBox.Composer>
+      </ChatBox.Root>,
     );
 
     expect(screen.getByRole('region', { name: 'Composed bot' })).toBeInTheDocument();
@@ -190,9 +190,9 @@ describe('ChatBot', () => {
 
   it('supports fully custom FAQ option buttons with helper props', async () => {
     render(
-      <ChatBot.Root mode="faq" title="Custom options bot" faqItems={[{ question: 'Billing', answer: 'Billing help is available.' }]}>
-        <ChatBot.Messages />
-        <ChatBot.FaqOptions label="Custom options">
+      <ChatBox.Root mode="faq" title="Custom options bot" faqItems={[{ question: 'Billing', answer: 'Billing help is available.' }]}>
+        <ChatBox.Messages />
+        <ChatBox.FaqOptions label="Custom options">
           {(item, option) => (
             <button
               {...option.getButtonProps({
@@ -205,8 +205,8 @@ describe('ChatBot', () => {
               <span>{item.question}</span>
             </button>
           )}
-        </ChatBot.FaqOptions>
-      </ChatBot.Root>,
+        </ChatBox.FaqOptions>
+      </ChatBox.Root>,
     );
 
     const optionButton = screen.getByRole('button', { name: 'Ask about Billing' });
@@ -218,13 +218,13 @@ describe('ChatBot', () => {
     expect(await screen.findByText('Billing help is available.')).toBeInTheDocument();
   });
 
-  it('throws a helpful error when a ChatBot slot is rendered outside ChatBot.Root', () => {
+  it('throws a helpful error when a ChatBot slot is rendered outside ChatBox.Root', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    expect(() => render(<ChatBot.Header />)).toThrow(
-      'ChatBot.Header must be used within ChatBot.Root or ChatBotWidget.ChatBot',
+    expect(() => render(<ChatBox.Header />)).toThrow(
+      'ChatBox.Header must be used within ChatBox.Root or ChatBotWidget.ChatBot',
     );
-    expect(() => render(<ChatBot.Header />)).toThrow('not directly inside ChatBotWidget.Panel');
+    expect(() => render(<ChatBox.Header />)).toThrow('not directly inside ChatBotWidget.Panel');
 
     consoleError.mockRestore();
   });

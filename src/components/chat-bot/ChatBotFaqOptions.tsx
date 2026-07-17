@@ -5,7 +5,7 @@ import type { ChatBotFaqOptionButtonProps, ChatBotFaqOptionRenderState, ChatBotF
 
 export function ChatBotFaqOptions({ children, className, label, ...containerProps }: ChatBotFaqOptionsProps) {
   const { faqItems = [], isFaqMode, disabled, submitMessage, faqOptionsLabel, classNames } =
-    useChatBotContext('ChatBot.FaqOptions');
+    useChatBotContext('ChatBox.FaqOptions');
   const resolvedLabel = label ?? faqOptionsLabel;
   const defaultButtonClassName = cn(
     'shrink-0 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60',
@@ -54,7 +54,7 @@ export function ChatBotFaqOptions({ children, className, label, ...containerProp
 }
 
 export function ChatBotPresetFaqOptions() {
-  const { faqOptionsLabel, isFaqMode, showFaqOptions } = useChatBotContext('ChatBot.FaqOptions');
+  const { faqOptionsLabel, isFaqMode, showFaqOptions } = useChatBotContext('ChatBox.FaqOptions');
 
   if (!isFaqMode || !showFaqOptions) {
     return null;

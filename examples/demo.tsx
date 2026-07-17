@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import {
-  ChatBot,
-  ChatBotWidget,
+  ChatBox,
+  ChatBoxWidget,
   createOpenApiProvider,
   useLocalChatSession,
 } from "../src";
@@ -77,7 +77,7 @@ function Demo() {
         <div>
           <h1 className="text-3xl font-bold">Chatterkit</h1>
           <p className="mt-2 text-slate-600">
-            FAQ mode demo using the reusable ChatBot component and floating
+            FAQ mode demo using the reusable ChatBox component and floating
             widget launcher.
           </p>
         </div>
@@ -90,29 +90,29 @@ function Demo() {
             composer, input, and submit button icon.
           </p>
           <div className="mt-4">
-            <ChatBot.Root
+            <ChatBox.Root
               mode="faq"
               title="Composed FAQ Assistant"
               faqItems={faqItems}
               fallbackResponse="I do not know that yet. Please contact support for help."
               className="h-[30rem] border-purple-100 shadow-xl"
             >
-              <ChatBot.Header className="bg-purple-600 text-white">
+              <ChatBox.Header className="bg-purple-600 text-white">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
                     🤖
                   </span>
                   <div>
-                    <ChatBot.Title className="text-white" />
+                    <ChatBox.Title className="text-white" />
                     <p className="text-xs text-purple-100">
                       Compound component demo
                     </p>
                   </div>
                 </div>
-              </ChatBot.Header>
-              <ChatBot.Messages className="bg-purple-50">
+              </ChatBox.Header>
+              <ChatBox.Messages className="bg-purple-50">
                 {(message) => (
-                  <ChatBot.MessageItem
+                  <ChatBox.MessageItem
                     message={message}
                     className="items-end gap-2"
                     bubbleClassName={
@@ -125,10 +125,10 @@ function Demo() {
                       {message.role === "bot" ? "🤖" : "🧑"}
                     </span>
                     {message.content}
-                  </ChatBot.MessageItem>
+                  </ChatBox.MessageItem>
                 )}
-              </ChatBot.Messages>
-              <ChatBot.FaqOptions className="border-purple-100 bg-purple-50/80">
+              </ChatBox.Messages>
+              <ChatBox.FaqOptions className="border-purple-100 bg-purple-50/80">
                 {(item, option) => (
                   <button
                     {...option.getButtonProps({
@@ -141,23 +141,23 @@ function Demo() {
                     </span>
                   </button>
                 )}
-              </ChatBot.FaqOptions>
-              <ChatBot.Loading className="text-purple-500">
+              </ChatBox.FaqOptions>
+              <ChatBox.Loading className="text-purple-500">
                 Checking the FAQ...
-              </ChatBot.Loading>
-              <ChatBot.Error className="text-rose-600">
+              </ChatBox.Loading>
+              <ChatBox.Error className="text-rose-600">
                 The assistant hit a custom error state.
-              </ChatBot.Error>
-              <ChatBot.Composer className="border-purple-100">
-                <ChatBot.Input className="focus:border-purple-500 focus:ring-purple-100" />
-                <ChatBot.SubmitButton
+              </ChatBox.Error>
+              <ChatBox.Composer className="border-purple-100">
+                <ChatBox.Input className="focus:border-purple-500 focus:ring-purple-100" />
+                <ChatBox.SubmitButton
                   className="bg-purple-600 hover:bg-purple-700"
                   aria-label="Send message"
                 >
                   ➤
-                </ChatBot.SubmitButton>
-              </ChatBot.Composer>
-            </ChatBot.Root>
+                </ChatBox.SubmitButton>
+              </ChatBox.Composer>
+            </ChatBox.Root>
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
@@ -167,14 +167,14 @@ function Demo() {
             composer, input, and submit button icon.
           </p>
           <div className="mt-4">
-            <ChatBot.Root
+            <ChatBox.Root
               mode="faq"
               title="Im basic chatbot without styles"
               faqItems={faqItems}
               fallbackResponse="I do not know that yet. Please contact support for help."
               // className=""
             >
-              <ChatBot.Header
+              <ChatBox.Header
               // className="bg-purple-600 text-white"
               >
                 <div
@@ -186,7 +186,7 @@ function Demo() {
                     🤖
                   </span>
                   <div>
-                    <ChatBot.Title
+                    <ChatBox.Title
                     //  className="text-white"
                     />
                     <p
@@ -196,12 +196,12 @@ function Demo() {
                     </p>
                   </div>
                 </div>
-              </ChatBot.Header>
-              <ChatBot.Messages
+              </ChatBox.Header>
+              <ChatBox.Messages
               // className="bg-purple-50"
               >
                 {(message) => (
-                  <ChatBot.MessageItem
+                  <ChatBox.MessageItem
                     message={message}
                     // className="items-end gap-2"
                     // bubbleClassName={
@@ -216,10 +216,10 @@ function Demo() {
                       {message.role === "bot" ? "🤖" : "🧑"}
                     </span>
                     {message.content}
-                  </ChatBot.MessageItem>
+                  </ChatBox.MessageItem>
                 )}
-              </ChatBot.Messages>
-              <ChatBot.FaqOptions
+              </ChatBox.Messages>
+              <ChatBox.FaqOptions
               // className="border-purple-100 bg-purple-50/80"
               >
                 {(item, option) => (
@@ -236,31 +236,31 @@ function Demo() {
                     </span>
                   </button>
                 )}
-              </ChatBot.FaqOptions>
-              <ChatBot.Loading
+              </ChatBox.FaqOptions>
+              <ChatBox.Loading
               // className="text-purple-500"
               >
                 Checking the FAQ...
-              </ChatBot.Loading>
-              <ChatBot.Error
+              </ChatBox.Loading>
+              <ChatBox.Error
               // className="text-rose-600"
               >
                 The assistant hit a custom error state.
-              </ChatBot.Error>
-              <ChatBot.Composer
+              </ChatBox.Error>
+              <ChatBox.Composer
               // className="border-purple-100"
               >
-                <ChatBot.Input
+                <ChatBox.Input
                 // className="focus:border-purple-500 focus:ring-purple-100"
                 />
-                <ChatBot.SubmitButton
+                <ChatBox.SubmitButton
                   // className="bg-purple-600 hover:bg-purple-700"
                   aria-label="Send message"
                 >
                   ➤
-                </ChatBot.SubmitButton>
-              </ChatBot.Composer>
-            </ChatBot.Root>
+                </ChatBox.SubmitButton>
+              </ChatBox.Composer>
+            </ChatBox.Root>
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
@@ -273,28 +273,28 @@ function Demo() {
             response.
           </p>
           <div className="mt-4">
-            <ChatBot.Root
+            <ChatBox.Root
               mode="adapter"
               title="API Provider Demo"
               provider={simulatedApiProvider}
               metadata={{ demo: "provider-api-simulation" }}
               className="h-[30rem] border-sky-100 shadow-xl"
             >
-              <ChatBot.Header className="bg-sky-600 text-white">
+              <ChatBox.Header className="bg-sky-600 text-white">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
                     🌐
                   </span>
                   <div>
-                    <ChatBot.Title className="text-white" />
+                    <ChatBox.Title className="text-white" />
                     <p className="text-xs text-sky-100">
                       Simulates POST /api/chat with a delayed response
                     </p>
                   </div>
                 </div>
-              </ChatBot.Header>
+              </ChatBox.Header>
               <div className="flex flex-1 flex-col gap-3 overflow-y-auto bg-sky-50 p-4">
-                <ChatBot.Messages
+                <ChatBox.Messages
                   className="flex-none overflow-visible bg-transparent p-0"
                   newMessageIndicator={({ unreadCount, scrollToBottom }) => (
                     <button
@@ -308,7 +308,7 @@ function Demo() {
                   )}
                 >
                   {(message) => (
-                    <ChatBot.MessageItem
+                    <ChatBox.MessageItem
                       message={message}
                       bubbleClassName={
                         message.role === "bot"
@@ -320,10 +320,10 @@ function Demo() {
                         {message.role === "bot" ? "🌐" : "🧑"}
                       </span>
                       {message.content}
-                    </ChatBot.MessageItem>
+                    </ChatBox.MessageItem>
                   )}
-                </ChatBot.Messages>
-                <ChatBot.Loading className="p-0">
+                </ChatBox.Messages>
+                <ChatBox.Loading className="p-0">
                   <div className="flex justify-start">
                     <div className="rounded-2xl rounded-bl-sm bg-white px-4 py-3 shadow-sm ring-1 ring-sky-100">
                       <span className="sr-only">Calling simulated API...</span>
@@ -337,24 +337,24 @@ function Demo() {
                       </div>
                     </div>
                   </div>
-                </ChatBot.Loading>
+                </ChatBox.Loading>
               </div>
-              <ChatBot.Error className="px-4 pb-2 text-rose-600">
+              <ChatBox.Error className="px-4 pb-2 text-rose-600">
                 The simulated API request failed.
-              </ChatBot.Error>
-              <ChatBot.Composer className="border-sky-100">
-                <ChatBot.Input
+              </ChatBox.Error>
+              <ChatBox.Composer className="border-sky-100">
+                <ChatBox.Input
                   className="focus:border-sky-500 focus:ring-sky-100"
                   placeholder="Ask the simulated API anything..."
                 />
-                <ChatBot.SubmitButton
+                <ChatBox.SubmitButton
                   className="bg-sky-600 hover:bg-sky-700"
                   aria-label="Send message"
                 >
                   Send
-                </ChatBot.SubmitButton>
-              </ChatBot.Composer>
-            </ChatBot.Root>
+                </ChatBox.SubmitButton>
+              </ChatBox.Composer>
+            </ChatBox.Root>
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
@@ -368,7 +368,7 @@ function Demo() {
             response shape <code>{"{ response: string }"}</code>.
           </p>
           <div className="mt-4">
-            <ChatBot.Root
+            <ChatBox.Root
               mode="adapter"
               title="Local FastAPI Assistant"
               provider={fastApiProvider}
@@ -378,23 +378,23 @@ function Demo() {
               errorLabel="The FastAPI chatbot request failed. Check that localhost:8000 is running and allows CORS."
               className="h-[30rem] border-emerald-100 shadow-xl"
             >
-              <ChatBot.Header className="bg-emerald-600 text-white">
+              <ChatBox.Header className="bg-emerald-600 text-white">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
                     🧠
                   </span>
                   <div>
-                    <ChatBot.Title className="text-white" />
+                    <ChatBox.Title className="text-white" />
                     <p className="text-xs text-emerald-100">
                       Real adapter provider connected to FastAPI
                     </p>
                   </div>
                 </div>
-              </ChatBot.Header>
+              </ChatBox.Header>
               <div className="flex flex-1 flex-col gap-3 overflow-y-auto bg-emerald-50 p-4">
-                <ChatBot.Messages className="flex-none overflow-visible bg-transparent p-0">
+                <ChatBox.Messages className="flex-none overflow-visible bg-transparent p-0">
                   {(message) => (
-                    <ChatBot.MessageItem
+                    <ChatBox.MessageItem
                       message={message}
                       bubbleClassName={
                         message.role === "bot"
@@ -406,10 +406,10 @@ function Demo() {
                         {message.role === "bot" ? "🧠" : "🧑"}
                       </span> */}
                       {message.content}
-                    </ChatBot.MessageItem>
+                    </ChatBox.MessageItem>
                   )}
-                </ChatBot.Messages>
-                <ChatBot.Loading className="p-0">
+                </ChatBox.Messages>
+                <ChatBox.Loading className="p-0">
                   <div className="flex justify-start">
                     <div className="rounded-2xl rounded-bl-sm bg-white px-4 py-3 shadow-sm ring-1 ring-emerald-100">
                       <span className="sr-only">
@@ -425,25 +425,25 @@ function Demo() {
                       </div>
                     </div>
                   </div>
-                </ChatBot.Loading>
+                </ChatBox.Loading>
               </div>
-              <ChatBot.Error className="px-4 pb-2 text-rose-600">
+              <ChatBox.Error className="px-4 pb-2 text-rose-600">
                 The FastAPI chatbot request failed. Check that localhost:8000 is
                 running and allows CORS from the Vite dev server.
-              </ChatBot.Error>
-              <ChatBot.Composer className="border-emerald-100">
-                <ChatBot.Input
+              </ChatBox.Error>
+              <ChatBox.Composer className="border-emerald-100">
+                <ChatBox.Input
                   className="focus:border-emerald-500 focus:ring-emerald-100"
                   placeholder="Ask your local FastAPI chatbot..."
                 />
-                <ChatBot.SubmitButton
+                <ChatBox.SubmitButton
                   className="bg-emerald-600 hover:bg-emerald-700"
                   aria-label="Send message"
                 >
                   Send
-                </ChatBot.SubmitButton>
-              </ChatBot.Composer>
-            </ChatBot.Root>
+                </ChatBox.SubmitButton>
+              </ChatBox.Composer>
+            </ChatBox.Root>
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
@@ -454,47 +454,47 @@ function Demo() {
             state appears.
           </p>
           <div className="mt-4">
-            <ChatBot.Root
+            <ChatBox.Root
               mode="adapter"
               title="Loading/Error Demo"
               provider={failingDemoProvider}
               errorLabel="The assistant hit a custom error state."
               className="h-[30rem] border-rose-100 shadow-xl"
             >
-              <ChatBot.Header className="bg-rose-600 text-white">
+              <ChatBox.Header className="bg-rose-600 text-white">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
                     ⚠️
                   </span>
                   <div>
-                    <ChatBot.Title className="text-white" />
+                    <ChatBox.Title className="text-white" />
                     <p className="text-xs text-rose-100">
                       Demo provider intentionally fails
                     </p>
                   </div>
                 </div>
-              </ChatBot.Header>
-              <ChatBot.Messages className="bg-rose-50" />
-              <ChatBot.Loading className="flex items-center gap-2 px-4 pb-2 text-purple-500">
+              </ChatBox.Header>
+              <ChatBox.Messages className="bg-rose-50" />
+              <ChatBox.Loading className="flex items-center gap-2 px-4 pb-2 text-purple-500">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-purple-500" />
                 Checking the FAQ...
-              </ChatBot.Loading>
-              <ChatBot.Error className="rounded-lg bg-rose-50 px-4 pb-3 text-rose-600">
+              </ChatBox.Loading>
+              <ChatBox.Error className="rounded-lg bg-rose-50 px-4 pb-3 text-rose-600">
                 The assistant hit a custom error state.
-              </ChatBot.Error>
-              <ChatBot.Composer className="border-rose-100">
-                <ChatBot.Input
+              </ChatBox.Error>
+              <ChatBox.Composer className="border-rose-100">
+                <ChatBox.Input
                   className="focus:border-rose-500 focus:ring-rose-100"
                   placeholder="Type anything to trigger loading/error..."
                 />
-                <ChatBot.SubmitButton
+                <ChatBox.SubmitButton
                   className="bg-rose-600 hover:bg-rose-700"
                   aria-label="Send message"
                 >
                   Send
-                </ChatBot.SubmitButton>
-              </ChatBot.Composer>
-            </ChatBot.Root>
+                </ChatBox.SubmitButton>
+              </ChatBox.Composer>
+            </ChatBox.Root>
           </div>
         </section>
         <section className="rounded-2xl bg-white p-6 shadow">
@@ -506,7 +506,7 @@ function Demo() {
         </section>
       </div>
 
-      <ChatBotWidget.Root
+      <ChatBoxWidget.Root
         mode="faq"
         title="Custom FAQ Assistant"
         faqItems={faqItems}
@@ -515,27 +515,27 @@ function Demo() {
         closeLabel="Minimize custom support chat"
         draggable
       >
-        <ChatBotWidget.Panel className="chatbot-panel-enter  items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
-          <ChatBotWidget.ChatBot className="h-[30rem] rounded-none border-0 shadow-none">
-            <ChatBot.Header className="bg-purple-600 text-white">
+        <ChatBoxWidget.Panel className="chatbot-panel-enter  items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
+          <ChatBoxWidget.ChatBox className="h-[30rem] rounded-none border-0 shadow-none">
+            <ChatBox.Header className="bg-purple-600 text-white">
               <div className="flex items-center justify-between gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
                   🤖
                 </span>
                 <div>
-                  <ChatBot.Title className="text-white" />
+                  <ChatBox.Title className="text-white" />
                   <p className="text-xs text-purple-100">
                     Compound component demo
                   </p>
                 </div>
-                <ChatBotWidget.CloseButton className="bg-white/20 px-3 text-white shadow-none hover:bg-white/30">
+                <ChatBoxWidget.CloseButton className="bg-white/20 px-3 text-white shadow-none hover:bg-white/30">
                   ×
-                </ChatBotWidget.CloseButton>
+                </ChatBoxWidget.CloseButton>
               </div>
-            </ChatBot.Header>
-            <ChatBot.Messages className="bg-purple-50">
+            </ChatBox.Header>
+            <ChatBox.Messages className="bg-purple-50">
               {(message) => (
-                <ChatBot.MessageItem
+                <ChatBox.MessageItem
                   message={message}
                   bubbleClassName={
                     message.role === "bot"
@@ -547,10 +547,10 @@ function Demo() {
                     {message.role === "bot" ? "🤖" : "🧑"}
                   </span>
                   {message.content}
-                </ChatBot.MessageItem>
+                </ChatBox.MessageItem>
               )}
-            </ChatBot.Messages>
-            <ChatBot.FaqOptions
+            </ChatBox.Messages>
+            <ChatBox.FaqOptions
               label="Select a topic:"
               className="border-purple-100 bg-purple-50/80"
             >
@@ -564,22 +564,26 @@ function Demo() {
                   💬 {item.question}
                 </button>
               )}
-            </ChatBot.FaqOptions>
-            <ChatBot.Composer>
-              <ChatBot.Input className="focus:border-purple-500 focus:ring-purple-100" />
-              <ChatBot.SubmitButton
+            </ChatBox.FaqOptions>
+            <ChatBox.Composer>
+              <ChatBox.Input className="focus:border-purple-500 focus:ring-purple-100" />
+              <ChatBox.SubmitButton
                 className="bg-purple-600 hover:bg-purple-700"
                 aria-label="Send message"
               >
                 ➤
-              </ChatBot.SubmitButton>
-            </ChatBot.Composer>
-          </ChatBotWidget.ChatBot>
-        </ChatBotWidget.Panel>
-        <ChatBotWidget.Launcher className="chatbot-launcher-attention bottom-5 bg-purple-600 shadow-purple-300 transition-transform duration-300 hover:scale-110 hover:rotate-6 hover:bg-purple-700">
-          ✨
-        </ChatBotWidget.Launcher>
-      </ChatBotWidget.Root>
+              </ChatBox.SubmitButton>
+            </ChatBox.Composer>
+          </ChatBoxWidget.ChatBox>
+        </ChatBoxWidget.Panel>
+        <ChatBoxWidget.Launcher className="chatbot-launcher-attention bottom-5 bg-white-600 shadow-purple-300 transition-transform duration-300 hover:scale-110 hover:rotate-6 hover:bg-white-700">
+          <img
+            src="/chatterkit-icon.svg"
+            alt="Open Chatterkit chat"
+            className="h-7 w-7"
+          />
+        </ChatBoxWidget.Launcher>
+      </ChatBoxWidget.Root>
     </main>
   );
 }

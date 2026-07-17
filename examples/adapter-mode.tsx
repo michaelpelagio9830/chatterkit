@@ -1,4 +1,4 @@
-import { ChatBot, createOpenApiProvider } from '../src';
+import { ChatBox, createOpenApiProvider } from '../src';
 
 const provider = createOpenApiProvider<{ message: string }, { answer: string }>({
   endpoint: '/api/chat',
@@ -16,7 +16,7 @@ const provider = createOpenApiProvider<{ message: string }, { answer: string }>(
 
 export function AdapterModeExample() {
   return (
-    <ChatBot
+    <ChatBox
       mode="adapter"
       title="AI Assistant"
       provider={provider}

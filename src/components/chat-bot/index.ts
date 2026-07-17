@@ -6,9 +6,9 @@ import { ChatBotMessages } from './ChatBotMessages';
 import { ChatBotPreset } from './ChatBotPreset';
 import { ChatBotRoot } from './ChatBotRoot';
 import { ChatBotEmpty, ChatBotError, ChatBotLoading } from './ChatBotState';
-import type { ChatBotCompoundComponent } from './ChatBot.types';
+import type { ChatBoxCompoundComponent } from './ChatBot.types';
 
-export const ChatBot = Object.assign(ChatBotPreset, {
+export const ChatBox = Object.assign(ChatBotPreset, {
   Root: ChatBotRoot,
   Header: ChatBotHeader,
   Title: ChatBotTitle,
@@ -21,7 +21,10 @@ export const ChatBot = Object.assign(ChatBotPreset, {
   Composer: ChatBotComposer,
   Input: ChatBotInput,
   SubmitButton: ChatBotSubmitButton,
-}) satisfies ChatBotCompoundComponent;
+}) satisfies ChatBoxCompoundComponent;
+
+/** Backwards-compatible alias for the previous ChatBot naming. Prefer `ChatBox`. */
+export const ChatBot = ChatBox;
 
 export * from './ChatBot.types';
 export { ChatBotRoot } from './ChatBotRoot';

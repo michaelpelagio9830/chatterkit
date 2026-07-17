@@ -1,4 +1,12 @@
-# Chatterkit
+<p align="center">
+  <img src="public/chatterkit-horizontal-wordmark.svg" alt="Chatterkit" width="620" />
+</p>
+
+<h1 align="center">Chatterkit</h1>
+
+<p align="center">
+  A reusable React TypeScript chatbot and chat widget library.
+</p>
 
 Chatterkit is a reusable **React TypeScript chatbot and chat widget library** for building embeddable support bots, FAQ assistants, customer-support widgets, and adapter-backed AI chat interfaces.
 
@@ -16,6 +24,23 @@ Chatterkit currently supports:
 
 The recommended stack is **React + TypeScript + Tailwind CSS + Vite + Vitest**.
 
+## Live demo
+
+Open the local-source demo in CodeSandbox:
+
+```txt
+https://codesandbox.io/p/github/michaelpelagio9830/chatterkit
+```
+
+The sandbox runs the Vite dev server and loads `examples/codesandbox-demo.tsx`, which imports directly from this repository's local `src` folder:
+
+```tsx
+import { ChatBox, ChatBoxWidget } from '../src';
+import '../src/style.css';
+```
+
+Use this local-source sandbox while iterating on unreleased changes. After publishing a new package version, examples can be switched to the public package import: `import { ChatBox, ChatBoxWidget } from 'chatterkit'`.
+
 ## Installation
 
 ```bash
@@ -25,7 +50,7 @@ npm install chatterkit
 Import the component and package CSS:
 
 ```tsx
-import { ChatBot, ChatBotWidget } from 'chatterkit';
+import { ChatBox, ChatBoxWidget } from 'chatterkit';
 import 'chatterkit/style.css';
 ```
 
@@ -51,14 +76,14 @@ const faqItems: FaqItem[] = [
 ];
 ```
 
-Raw HTML embedded in message strings is not executed. Links are rendered with safe external-link behavior (`target="_blank"` and `rel="noopener noreferrer"` for external URLs). If you pass custom React `children` to `ChatBot.MessageItem`, Chatterkit preserves those children instead of markdown-parsing arbitrary React nodes.
+Raw HTML embedded in message strings is not executed. Links are rendered with safe external-link behavior (`target="_blank"` and `rel="noopener noreferrer"` for external URLs). If you pass custom React `children` to `ChatBox.MessageItem`, Chatterkit preserves those children instead of markdown-parsing arbitrary React nodes.
 
 ## FAQ mode
 
 Use FAQ mode when the chatbot should answer from local predefined content.
 
 ```tsx
-import { ChatBot, type FaqItem } from 'chatterkit';
+import { ChatBox, type FaqItem } from 'chatterkit';
 import 'chatterkit/style.css';
 
 const faqItems: FaqItem[] = [
@@ -81,7 +106,7 @@ const faqItems: FaqItem[] = [
 
 export function SupportBot() {
   return (
-    <ChatBot
+    <ChatBox
       mode="faq"
       title="FAQ Assistant"
       faqItems={faqItems}
@@ -98,20 +123,20 @@ When `showFaqOptions` is enabled, FAQ questions render as clickable badge button
 For custom layouts, render the badge list yourself with the compound slot:
 
 ```tsx
-<ChatBot.Root mode="faq" title="Support" faqItems={faqItems}>
-  <ChatBot.Header />
-  <ChatBot.Messages />
-  <ChatBot.FaqOptions label="What can we help with?">
+<ChatBox.Root mode="faq" title="Support" faqItems={faqItems}>
+  <ChatBox.Header />
+  <ChatBox.Messages />
+  <ChatBox.FaqOptions label="What can we help with?">
     {(item) => `💬 ${item.question}`}
-  </ChatBot.FaqOptions>
-  <ChatBot.Composer />
-</ChatBot.Root>
+  </ChatBox.FaqOptions>
+  <ChatBox.Composer />
+</ChatBox.Root>
 ```
 
 For full control over each FAQ option button, use the second render-prop argument. `getButtonProps` wires the correct `type`, disabled state, and click handler while letting you customize classes, labels, data attributes, and nested markup:
 
 ```tsx
-<ChatBot.FaqOptions className="border-purple-100 bg-purple-50/80">
+<ChatBox.FaqOptions className="border-purple-100 bg-purple-50/80">
   {(item, option) => (
     <button
       {...option.getButtonProps({
@@ -124,13 +149,13 @@ For full control over each FAQ option button, use the second render-prop argumen
       <span className="mt-1 text-xs text-purple-500">Quick question</span>
     </button>
   )}
-</ChatBot.FaqOptions>
+</ChatBox.FaqOptions>
 ```
 
 You can also provide a custom FAQ resolver:
 
 ```tsx
-<ChatBot
+<ChatBox
   mode="faq"
   faqItems={faqItems}
   faqResolver={(message, context, items) => {
@@ -144,7 +169,7 @@ You can also provide a custom FAQ resolver:
 Use adapter mode when the chatbot should call an external service. The package exposes a generic provider contract and an OpenAPI-friendly helper.
 
 ```tsx
-import { ChatBot, createOpenApiProvider } from 'chatterkit';
+import { ChatBox, createOpenApiProvider } from 'chatterkit';
 import 'chatterkit/style.css';
 
 const provider = createOpenApiProvider<{ message: string }, { answer: string }>({
@@ -159,7 +184,7 @@ const provider = createOpenApiProvider<{ message: string }, { answer: string }>(
 
 export function AiAssistant() {
   return (
-    <ChatBot
+    <ChatBox
       mode="adapter"
       title="AI Assistant"
       provider={provider}
@@ -186,80 +211,80 @@ export const provider: ChatProvider = {
 
 ## Composable chatbot UI
 
-Use the simple `<ChatBot />` preset when the default structure is enough. Use the compound API when you need full control over the chatbox content. In composed usage, the mode configuration belongs on `ChatBot.Root`.
+Use the simple `<ChatBox />` preset when the default structure is enough. Use the compound API when you need full control over the chatbox content. In composed usage, the mode configuration belongs on `ChatBox.Root`.
 
 ```tsx
-<ChatBot.Root mode="faq" title="Custom Support" faqItems={faqItems}>
-  <ChatBot.Header className="bg-purple-600 text-white">
+<ChatBox.Root mode="faq" title="Custom Support" faqItems={faqItems}>
+  <ChatBox.Header className="bg-purple-600 text-white">
     <div className="flex items-center gap-3">
       <span className="rounded-full bg-white/20 p-2">🤖</span>
       <div>
-        <ChatBot.Title className="text-white" />
+        <ChatBox.Title className="text-white" />
         <p className="text-xs text-purple-100">Ask us anything</p>
       </div>
     </div>
-  </ChatBot.Header>
+  </ChatBox.Header>
 
-  <ChatBot.Messages className="bg-purple-50">
+  <ChatBox.Messages className="bg-purple-50">
     {(message) => (
-      <ChatBot.MessageItem
+      <ChatBox.MessageItem
         message={message}
         bubbleClassName={message.role === 'bot' ? 'bg-white text-purple-950' : 'bg-purple-600 text-white'}
       >
         <span className="mr-2">{message.role === 'bot' ? '🤖' : '🧑'}</span>
         {message.content}
-      </ChatBot.MessageItem>
+      </ChatBox.MessageItem>
     )}
-  </ChatBot.Messages>
+  </ChatBox.Messages>
 
-  <ChatBot.Loading className="text-purple-500">Checking the FAQ...</ChatBot.Loading>
-  <ChatBot.Error className="text-rose-600">The assistant is unavailable.</ChatBot.Error>
+  <ChatBox.Loading className="text-purple-500">Checking the FAQ...</ChatBox.Loading>
+  <ChatBox.Error className="text-rose-600">The assistant is unavailable.</ChatBox.Error>
 
-  <ChatBot.Composer className="border-purple-100">
-    <ChatBot.Input className="focus:border-purple-500 focus:ring-purple-100" />
-    <ChatBot.SubmitButton className="bg-purple-600 hover:bg-purple-700" aria-label="Send message">
+  <ChatBox.Composer className="border-purple-100">
+    <ChatBox.Input className="focus:border-purple-500 focus:ring-purple-100" />
+    <ChatBox.SubmitButton className="bg-purple-600 hover:bg-purple-700" aria-label="Send message">
       ➤
-    </ChatBot.SubmitButton>
-  </ChatBot.Composer>
-</ChatBot.Root>
+    </ChatBox.SubmitButton>
+  </ChatBox.Composer>
+</ChatBox.Root>
 ```
 
-Available `ChatBot` slots:
+Available `ChatBox` slots:
 
-- `ChatBot.Root` — owns `faq`/`adapter` mode props, calls `useChatbot`, and provides context.
-- `ChatBot.Header` — header wrapper. Defaults to rendering `ChatBot.Title`.
-- `ChatBot.Title` — renders the configured `title` unless custom children are provided.
-- `ChatBot.Messages` — renders messages. Pass a function as children for per-message customization.
-- `ChatBot.FaqOptions` — renders FAQ items as clickable badge buttons in FAQ mode. Use `(item) => ...` for simple button content or `(item, option) => <button {...option.getButtonProps()}>...</button>` for fully custom buttons.
-- `ChatBot.MessageItem` — message row and bubble helper. Supports `bubbleClassName` and custom children.
-- `ChatBot.Empty` — custom empty state when there are no messages.
-- `ChatBot.Loading` — custom loading state.
-- `ChatBot.Error` — custom error state.
-- `ChatBot.Composer` — message form wrapper.
-- `ChatBot.Input` — controlled input connected to chatbot context.
-- `ChatBot.SubmitButton` — submit button that can render custom text or icons.
+- `ChatBox.Root` — owns `faq`/`adapter` mode props, calls `useChatbot`, and provides context.
+- `ChatBox.Header` — header wrapper. Defaults to rendering `ChatBox.Title`.
+- `ChatBox.Title` — renders the configured `title` unless custom children are provided.
+- `ChatBox.Messages` — renders messages. Pass a function as children for per-message customization.
+- `ChatBox.FaqOptions` — renders FAQ items as clickable badge buttons in FAQ mode. Use `(item) => ...` for simple button content or `(item, option) => <button {...option.getButtonProps()}>...</button>` for fully custom buttons.
+- `ChatBox.MessageItem` — message row and bubble helper. Supports `bubbleClassName` and custom children.
+- `ChatBox.Empty` — custom empty state when there are no messages.
+- `ChatBox.Loading` — custom loading state.
+- `ChatBox.Error` — custom error state.
+- `ChatBox.Composer` — message form wrapper.
+- `ChatBox.Input` — controlled input connected to chatbot context.
+- `ChatBox.SubmitButton` — submit button that can render custom text or icons.
 
-`ChatBot.Messages` uses the **render props** pattern, specifically **function as children**:
+`ChatBox.Messages` uses the **render props** pattern, specifically **function as children**:
 
 ```tsx
-<ChatBot.Messages>
+<ChatBox.Messages>
   {(message) => (
-    <ChatBot.MessageItem message={message}>
+    <ChatBox.MessageItem message={message}>
       <span className="mr-2">{message.role === 'bot' ? '🤖' : '🧑'}</span>
       {message.content}
-    </ChatBot.MessageItem>
+    </ChatBox.MessageItem>
   )}
-</ChatBot.Messages>
+</ChatBox.Messages>
 ```
 
 Use `classNames` for quick styling overrides. Use compound components when you need to change structure, icons, avatars, custom message rendering, or custom state UI.
 
 ### New message indicator
 
-`ChatBot.Messages` tracks whether the user is near the bottom of the scrollable message list. When a bot/system message arrives while the user is reading older messages, Chatterkit shows a small default "new message" jump button. You can replace it with your own React node or render function:
+`ChatBox.Messages` tracks whether the user is near the bottom of the scrollable message list. When a bot/system message arrives while the user is reading older messages, Chatterkit shows a small default "new message" jump button. You can replace it with your own React node or render function:
 
 ```tsx
-<ChatBot.Messages
+<ChatBox.Messages
   newMessageIndicator={({ unreadCount, latestMessage, scrollToBottom }) => (
     <button
       type="button"
@@ -273,45 +298,45 @@ Use `classNames` for quick styling overrides. Use compound components when you n
 />
 ```
 
-### ChatBot slot nesting rules
+### ChatBox slot nesting rules
 
-`ChatBot.Header`, `ChatBot.Messages`, `ChatBot.Composer`, and the other `ChatBot.*` slots require chatbot context. They must be rendered inside either:
+`ChatBox.Header`, `ChatBox.Messages`, `ChatBox.Composer`, and the other `ChatBox.*` slots require chatbot context. They must be rendered inside either:
 
-- `ChatBot.Root`, for embedded chatbots; or
-- `ChatBotWidget.ChatBot`, when composing a widget panel.
+- `ChatBox.Root`, for embedded chatbots; or
+- `ChatBoxWidget.ChatBox`, when composing a widget panel.
 
 Incorrect widget nesting:
 
 ```tsx
-<ChatBotWidget.Panel>
-  <ChatBot.Header /> {/* ❌ outside ChatBot context */}
-  <ChatBotWidget.ChatBot />
-</ChatBotWidget.Panel>
+<ChatBoxWidget.Panel>
+  <ChatBox.Header /> {/* ❌ outside ChatBox context */}
+  <ChatBoxWidget.ChatBox />
+</ChatBoxWidget.Panel>
 ```
 
 Correct widget nesting:
 
 ```tsx
-<ChatBotWidget.Panel>
-  <ChatBotWidget.ChatBot>
-    <ChatBot.Header />
-    <ChatBot.Messages />
-    <ChatBot.Composer>
-      <ChatBot.Input />
-      <ChatBot.SubmitButton>➤</ChatBot.SubmitButton>
-    </ChatBot.Composer>
-  </ChatBotWidget.ChatBot>
-</ChatBotWidget.Panel>
+<ChatBoxWidget.Panel>
+  <ChatBoxWidget.ChatBox>
+    <ChatBox.Header />
+    <ChatBox.Messages />
+    <ChatBox.Composer>
+      <ChatBox.Input />
+      <ChatBox.SubmitButton>➤</ChatBox.SubmitButton>
+    </ChatBox.Composer>
+  </ChatBoxWidget.ChatBox>
+</ChatBoxWidget.Panel>
 ```
 
 If a slot is used outside the correct context, the component throws a runtime error with guidance on where to move it. TypeScript cannot fully validate React component ancestry in normal JSX, so this runtime guard protects developers during local development and tests.
 
 ## Floating chat widget
 
-Use `ChatBotWidget` when you want a lower-right floating bubble that opens the chat panel when clicked. It supports the same `faq` and `adapter` mode configuration as `ChatBot`.
+Use `ChatBoxWidget` when you want a lower-right floating bubble that opens the chat panel when clicked. It supports the same `faq` and `adapter` mode configuration as `ChatBox`. `ChatBotWidget` remains available as a backwards-compatible alias.
 
 ```tsx
-import { ChatBotWidget, type FaqItem } from 'chatterkit';
+import { ChatBoxWidget, type FaqItem } from 'chatterkit';
 import 'chatterkit/style.css';
 
 const faqItems: FaqItem[] = [
@@ -324,7 +349,7 @@ const faqItems: FaqItem[] = [
 
 export function FloatingSupportBot() {
   return (
-    <ChatBotWidget
+    <ChatBoxWidget
       mode="faq"
       title="Support Assistant"
       faqItems={faqItems}
@@ -338,39 +363,39 @@ export function FloatingSupportBot() {
 
 The widget is collapsed by default, shows a fixed lower-right launcher bubble, and keeps the launcher available after users close/minimize the chat panel. Pass `defaultOpen` to render the panel open initially, or `widgetClassNames` to customize the launcher, panel shell, close button, and embedded chatbot sizing.
 
-For branded layouts, use the compound widget API. The root owns widget state, draggable behavior, and chat mode props; the slots let you compose custom markup and Tailwind classes. `ChatBotWidget.ChatBot` bridges the mode props from `ChatBotWidget.Root` into the underlying `ChatBot.Root`, so you do not repeat `faqItems` or `provider` inside the panel.
+For branded layouts, use the compound widget API. The root owns widget state, draggable behavior, and chat mode props; the slots let you compose custom markup and Tailwind classes. `ChatBoxWidget.ChatBox` bridges the mode props from `ChatBoxWidget.Root` into the underlying `ChatBox.Root`, so you do not repeat `faqItems` or `provider` inside the panel.
 
 ```tsx
-<ChatBotWidget.Root mode="faq" title="Custom Support" faqItems={faqItems} draggable>
-  <ChatBotWidget.Panel className="items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
+<ChatBoxWidget.Root mode="faq" title="Custom Support" faqItems={faqItems} draggable>
+  <ChatBoxWidget.Panel className="items-stretch overflow-hidden rounded-3xl border border-purple-200 bg-white shadow-2xl">
     <div className="flex items-center justify-between bg-purple-600 px-4 py-3 text-white">
       <span className="font-semibold">Custom Support</span>
-      <ChatBotWidget.CloseButton className="bg-white/20 px-3 shadow-none hover:bg-white/30" />
+      <ChatBoxWidget.CloseButton className="bg-white/20 px-3 shadow-none hover:bg-white/30" />
     </div>
 
-    <ChatBotWidget.ChatBot className="h-[30rem] rounded-none border-0 shadow-none">
-      <ChatBot.Header className="hidden" />
-      <ChatBot.Messages className="bg-purple-50">
+    <ChatBoxWidget.ChatBox className="h-[30rem] rounded-none border-0 shadow-none">
+      <ChatBox.Header className="hidden" />
+      <ChatBox.Messages className="bg-purple-50">
         {(message) => (
-          <ChatBot.MessageItem message={message}>
+          <ChatBox.MessageItem message={message}>
             <span className="mr-2">{message.role === 'bot' ? '🤖' : '🧑'}</span>
             {message.content}
-          </ChatBot.MessageItem>
+          </ChatBox.MessageItem>
         )}
-      </ChatBot.Messages>
-      <ChatBot.Composer>
-        <ChatBot.Input />
-        <ChatBot.SubmitButton className="bg-purple-600 hover:bg-purple-700" aria-label="Send message">
+      </ChatBox.Messages>
+      <ChatBox.Composer>
+        <ChatBox.Input />
+        <ChatBox.SubmitButton className="bg-purple-600 hover:bg-purple-700" aria-label="Send message">
           ➤
-        </ChatBot.SubmitButton>
-      </ChatBot.Composer>
-    </ChatBotWidget.ChatBot>
-  </ChatBotWidget.Panel>
+        </ChatBox.SubmitButton>
+      </ChatBox.Composer>
+    </ChatBoxWidget.ChatBox>
+  </ChatBoxWidget.Panel>
 
-  <ChatBotWidget.Launcher className="bg-purple-600 shadow-purple-300 hover:bg-purple-700">
+  <ChatBoxWidget.Launcher className="bg-purple-600 shadow-purple-300 hover:bg-purple-700">
     ✨
-  </ChatBotWidget.Launcher>
-</ChatBotWidget.Root>
+  </ChatBoxWidget.Launcher>
+</ChatBoxWidget.Root>
 ```
 
 ## Security guidance
@@ -389,7 +414,7 @@ Chatterkit can manage message state internally, but applications that need persi
 Use `useChatSession` for in-memory state owned by your app:
 
 ```tsx
-import { ChatBot, useChatSession, type ChatMessage } from 'chatterkit';
+import { ChatBox, useChatSession, type ChatMessage } from 'chatterkit';
 
 const greeting: ChatMessage = {
   id: 'welcome',
@@ -405,7 +430,7 @@ export function SessionBackedBot() {
   });
 
   return (
-    <ChatBot
+    <ChatBox
       mode="faq"
       faqItems={faqItems}
       initialMessages={session.messages}
@@ -418,7 +443,7 @@ export function SessionBackedBot() {
 Use `useLocalChatSession` to restore and persist chat history through `localStorage` or `sessionStorage`:
 
 ```tsx
-import { ChatBot, useLocalChatSession } from 'chatterkit';
+import { ChatBox, useLocalChatSession } from 'chatterkit';
 
 export function PersistentSupportBot() {
   const session = useLocalChatSession('support-widget', {
@@ -427,7 +452,7 @@ export function PersistentSupportBot() {
 
   return (
     <>
-      <ChatBot
+      <ChatBox
         mode="faq"
         faqItems={faqItems}
         initialMessages={session.messages}
@@ -479,7 +504,7 @@ Configure the `chatterkit` package on npm with a trusted publisher that matches 
 1. In npm, open the `chatterkit` package settings.
 2. Enable trusted publishing for GitHub Actions.
 3. Set the repository owner to `michaelpelagio9830`.
-4. Set the repository name to `ChatBot`.
+4. Set the repository name to `chatterkit`.
 5. Set the workflow filename to `publish-npm.yml`.
 
 Do not commit npm credentials or `.npmrc` files containing tokens to the repository.

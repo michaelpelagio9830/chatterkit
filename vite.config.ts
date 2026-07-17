@@ -3,6 +3,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    allowedHosts: ['.csb.app'],
+  },
   test: {
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',

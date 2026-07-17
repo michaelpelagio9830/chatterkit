@@ -7,7 +7,7 @@ import type {
   ReactNode,
   SetStateAction,
 } from 'react';
-import type { ChatBotProps, ChatMessage, FaqItem, UseChatbotResult } from '../../types';
+import type { ChatBoxProps, ChatMessage, FaqItem, UseChatbotResult } from '../../types';
 
 export type MessageRenderer = (message: ChatMessage) => ReactNode;
 
@@ -33,11 +33,12 @@ export type ChatBotFaqOptionRenderState = {
 
 export type FaqOptionRenderer = (faqItem: FaqItem, state: ChatBotFaqOptionRenderState) => ReactNode;
 
-export type ChatBotRootProps = ChatBotProps &
-  Omit<HTMLAttributes<HTMLElement>, keyof ChatBotProps> & {
+export type ChatBoxRootProps = ChatBoxProps &
+  Omit<HTMLAttributes<HTMLElement>, keyof ChatBoxProps> & {
     chatbotState?: UseChatbotResult;
     draftState?: [string, Dispatch<SetStateAction<string>>];
   };
+export type ChatBotRootProps = ChatBoxRootProps;
 export type ChatBotHeaderProps = HTMLAttributes<HTMLElement>;
 export type ChatBotTitleProps = HTMLAttributes<HTMLHeadingElement>;
 export type ChatBotMessagesProps = Omit<HTMLAttributes<HTMLUListElement | HTMLDivElement>, 'children'> & {
@@ -59,8 +60,8 @@ export type ChatBotComposerProps = HTMLAttributes<HTMLFormElement>;
 export type ChatBotInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'disabled'>;
 export type ChatBotSubmitButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>;
 
-export type ChatBotCompoundComponent = ComponentType<ChatBotProps> & {
-  Root: ComponentType<ChatBotRootProps>;
+export type ChatBoxCompoundComponent = ComponentType<ChatBoxProps> & {
+  Root: ComponentType<ChatBoxRootProps>;
   Header: ComponentType<ChatBotHeaderProps>;
   Title: ComponentType<ChatBotTitleProps>;
   Messages: ComponentType<ChatBotMessagesProps>;
@@ -73,3 +74,4 @@ export type ChatBotCompoundComponent = ComponentType<ChatBotProps> & {
   Input: ComponentType<ChatBotInputProps>;
   SubmitButton: ComponentType<ChatBotSubmitButtonProps>;
 };
+export type ChatBotCompoundComponent = ChatBoxCompoundComponent;

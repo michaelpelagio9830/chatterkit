@@ -5,7 +5,7 @@ import { scrollNearestContainerToBottom } from './scroll';
 import type { ChatBotStateProps } from './ChatBot.types';
 
 export function ChatBotEmpty({ children, className, ...divProps }: ChatBotStateProps) {
-  const { messages, emptyState, classNames } = useChatBotContext('ChatBot.Empty');
+  const { messages, emptyState, classNames } = useChatBotContext('ChatBox.Empty');
 
   if (messages.length > 0) {
     return null;
@@ -19,7 +19,7 @@ export function ChatBotEmpty({ children, className, ...divProps }: ChatBotStateP
 }
 
 export function ChatBotLoading({ children, className, ...divProps }: ChatBotStateProps) {
-  const { isLoading, loadingLabel, classNames } = useChatBotContext('ChatBot.Loading');
+  const { isLoading, loadingLabel, classNames } = useChatBotContext('ChatBox.Loading');
   const loadingRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export function ChatBotLoading({ children, className, ...divProps }: ChatBotStat
 }
 
 export function ChatBotError({ children, className, ...divProps }: ChatBotStateProps) {
-  const { error, errorLabel, classNames } = useChatBotContext('ChatBot.Error');
+  const { error, errorLabel, classNames } = useChatBotContext('ChatBox.Error');
 
   if (!error) {
     return null;

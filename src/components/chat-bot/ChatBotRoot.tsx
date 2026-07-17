@@ -6,7 +6,7 @@ import type { ChatBotRootProps } from './ChatBot.types';
 
 export function ChatBotRoot(props: ChatBotRootProps) {
   const {
-    title = 'Chatbot',
+    title = 'Chat',
     placeholder = 'Type your message...',
     disabled = false,
     className,

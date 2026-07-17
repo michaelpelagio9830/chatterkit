@@ -26,8 +26,8 @@ export function useChatBotContext(componentName: string) {
 
   if (!context) {
     throw new Error(
-      `${componentName} must be used within ChatBot.Root or ChatBotWidget.ChatBot. ` +
-        `When composing a widget panel, place ChatBot slots inside <ChatBotWidget.ChatBot>...</ChatBotWidget.ChatBot>, not directly inside ChatBotWidget.Panel.`,
+      `${componentName} must be used within ChatBox.Root or ChatBotWidget.ChatBot. ` +
+        `When composing a widget panel, place ChatBox slots inside <ChatBotWidget.ChatBot>...</ChatBotWidget.ChatBot>, not directly inside ChatBotWidget.Panel.`,
     );
   }
 

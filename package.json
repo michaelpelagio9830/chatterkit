@@ -1,12 +1,13 @@
 {
   "name": "chatterkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React TypeScript chatbot and chat widget library for embeddable FAQ bots, AI chat, and support assistants.",
   "type": "module",
   "license": "MIT",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "private":false,
   "files": [
     "dist",
     "README.md"

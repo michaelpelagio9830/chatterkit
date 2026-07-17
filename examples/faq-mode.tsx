@@ -1,4 +1,4 @@
-import { ChatBot, useLocalChatSession, type FaqItem } from '../src';
+import { ChatBox, useLocalChatSession, type FaqItem } from '../src';
 
 export const faqItems: FaqItem[] = [
   {
@@ -36,7 +36,7 @@ export const faqItems: FaqItem[] = [
 
 export function FaqModeExample() {
   return (
-    <ChatBot
+    <ChatBox
       mode="faq"
       title="FAQ Assistant"
       faqItems={faqItems}
@@ -59,7 +59,7 @@ export function PersistentFaqSessionsExample() {
         conversation restored independently.
       </p>
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <ChatBot.Root
+        <ChatBox.Root
           mode="faq"
           title="Billing FAQ Session"
           faqItems={faqItems}
@@ -71,16 +71,16 @@ export function PersistentFaqSessionsExample() {
           fallbackResponse="Billing does not know that yet. Please contact support."
           className="h-[30rem] border-amber-100 shadow-xl"
         >
-          <ChatBot.Header className="bg-amber-500 text-white" />
-          <ChatBot.Messages className="bg-amber-50" />
-          <ChatBot.FaqOptions className="border-amber-100 bg-amber-50/80" />
-          <ChatBot.Composer className="border-amber-100">
-            <ChatBot.Input className="focus:border-amber-500 focus:ring-amber-100" />
-            <ChatBot.SubmitButton className="bg-amber-500 hover:bg-amber-600">Send</ChatBot.SubmitButton>
-          </ChatBot.Composer>
-        </ChatBot.Root>
+          <ChatBox.Header className="bg-amber-500 text-white" />
+          <ChatBox.Messages className="bg-amber-50" />
+          <ChatBox.FaqOptions className="border-amber-100 bg-amber-50/80" />
+          <ChatBox.Composer className="border-amber-100">
+            <ChatBox.Input className="focus:border-amber-500 focus:ring-amber-100" />
+            <ChatBox.SubmitButton className="bg-amber-500 hover:bg-amber-600">Send</ChatBox.SubmitButton>
+          </ChatBox.Composer>
+        </ChatBox.Root>
 
-        <ChatBot.Root
+        <ChatBox.Root
           mode="faq"
           title="Support FAQ Session"
           faqItems={faqItems}
@@ -92,14 +92,14 @@ export function PersistentFaqSessionsExample() {
           fallbackResponse="Support does not know that yet. Please contact support."
           className="h-[30rem] border-teal-100 shadow-xl"
         >
-          <ChatBot.Header className="bg-teal-600 text-white" />
-          <ChatBot.Messages className="bg-teal-50" />
-          <ChatBot.FaqOptions className="border-teal-100 bg-teal-50/80" />
-          <ChatBot.Composer className="border-teal-100">
-            <ChatBot.Input className="focus:border-teal-500 focus:ring-teal-100" />
-            <ChatBot.SubmitButton className="bg-teal-600 hover:bg-teal-700">Send</ChatBot.SubmitButton>
-          </ChatBot.Composer>
-        </ChatBot.Root>
+          <ChatBox.Header className="bg-teal-600 text-white" />
+          <ChatBox.Messages className="bg-teal-50" />
+          <ChatBox.FaqOptions className="border-teal-100 bg-teal-50/80" />
+          <ChatBox.Composer className="border-teal-100">
+            <ChatBox.Input className="focus:border-teal-500 focus:ring-teal-100" />
+            <ChatBox.SubmitButton className="bg-teal-600 hover:bg-teal-700">Send</ChatBox.SubmitButton>
+          </ChatBox.Composer>
+        </ChatBox.Root>
       </div>
     </section>
   );

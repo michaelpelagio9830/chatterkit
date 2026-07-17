@@ -40,6 +40,7 @@ type ChatBotWidgetCompoundComponent = ComponentType<ChatBotWidgetProps> & {
   Launcher: ComponentType<ChatBotWidgetLauncherProps>;
   Panel: ComponentType<ChatBotWidgetPanelProps>;
   CloseButton: ComponentType<ChatBotWidgetCloseButtonProps>;
+  ChatBox: ComponentType<ChatBotWidgetChatBotProps>;
   ChatBot: ComponentType<ChatBotWidgetChatBotProps>;
 };
 
@@ -273,5 +274,9 @@ export const ChatBotWidget = Object.assign(ChatBotWidgetPreset, {
   Launcher: ChatBotWidgetLauncher,
   Panel: ChatBotWidgetPanel,
   CloseButton: ChatBotWidgetCloseButton,
+  ChatBox: ChatBotWidgetChatBot,
   ChatBot: ChatBotWidgetChatBot,
 }) satisfies ChatBotWidgetCompoundComponent;
+
+/** Preferred ChatBox-aligned name. `ChatBotWidget` remains available for backwards compatibility. */
+export const ChatBoxWidget = ChatBotWidget;

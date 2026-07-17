@@ -4,7 +4,7 @@ import { useChatBotContext } from './ChatBot.context';
 import type { ChatBotComposerProps, ChatBotInputProps, ChatBotSubmitButtonProps } from './ChatBot.types';
 
 export function ChatBotComposer({ children, className, onSubmit, ...formProps }: ChatBotComposerProps) {
-  const { submitDraft, classNames } = useChatBotContext('ChatBot.Composer');
+  const { submitDraft, classNames } = useChatBotContext('ChatBox.Composer');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,7 +25,7 @@ export function ChatBotComposer({ children, className, onSubmit, ...formProps }:
 }
 
 export function ChatBotInput({ className, id = 'chatbot-message-input', placeholder, ...inputProps }: ChatBotInputProps) {
-  const { draft, setDraft, disabled, placeholder: defaultPlaceholder, classNames } = useChatBotContext('ChatBot.Input');
+  const { draft, setDraft, disabled, placeholder: defaultPlaceholder, classNames } = useChatBotContext('ChatBox.Input');
 
   return (
     <>
@@ -50,7 +50,7 @@ export function ChatBotInput({ className, id = 'chatbot-message-input', placehol
 }
 
 export function ChatBotSubmitButton({ children, className, disabled, ...buttonProps }: ChatBotSubmitButtonProps) {
-  const { draft, disabled: composerDisabled, sendLabel, classNames } = useChatBotContext('ChatBot.SubmitButton');
+  const { draft, disabled: composerDisabled, sendLabel, classNames } = useChatBotContext('ChatBox.SubmitButton');
   const isDisabled = disabled ?? (composerDisabled || !draft.trim());
 
   return (

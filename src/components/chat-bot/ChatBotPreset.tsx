@@ -1,4 +1,4 @@
-import type { ChatBotProps } from '../../types';
+import type { ChatBoxProps } from '../../types';
 import { ChatBotComposer } from './ChatBotComposer';
 import { ChatBotPresetFaqOptions } from './ChatBotFaqOptions';
 import { ChatBotHeader } from './ChatBotHeader';
@@ -19,6 +19,6 @@ export function DefaultChatBotContent() {
   );
 }
 
-export function ChatBotPreset(props: ChatBotProps) {
+export function ChatBotPreset(props: ChatBoxProps) {
   return <ChatBotRoot {...props}>{props.children ?? <DefaultChatBotContent />}</ChatBotRoot>;
 }

@@ -4,7 +4,7 @@ import { useChatBotContext } from './ChatBot.context';
 import type { ChatBotMessageItemProps } from './ChatBot.types';
 
 export function ChatBotMessageItem({ message, children, className, bubbleClassName, ...itemProps }: ChatBotMessageItemProps) {
-  const { classNames } = useChatBotContext('ChatBot.MessageItem');
+  const { classNames } = useChatBotContext('ChatBox.MessageItem');
   const isUser = message.role === 'user';
 
   return (

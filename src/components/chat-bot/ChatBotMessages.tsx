@@ -8,7 +8,7 @@ import { getNearestScrollableContainer, isNearScrollBottom, scrollNearestContain
 import type { ChatBotMessagesProps, ChatBotNewMessageIndicatorState } from './ChatBot.types';
 
 export function ChatBotMessages({ children, className, newMessageIndicator, ...containerProps }: ChatBotMessagesProps) {
-  const { messages, classNames } = useChatBotContext('ChatBot.Messages');
+  const { messages, classNames } = useChatBotContext('ChatBox.Messages');
   const listRef = useRef<HTMLUListElement | null>(null);
   const endRef = useRef<HTMLLIElement | null>(null);
   const previousMessageCountRef = useRef(messages.length);

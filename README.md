@@ -29,7 +29,7 @@ The recommended stack is **React + TypeScript + Tailwind CSS + Vite + Vitest**.
 Open the local-source demo in CodeSandbox:
 
 ```txt
-https://codesandbox.io/p/github/michaelpelagio9830/chatterkit
+https://codesandbox.io/p/sandbox/prp9gf
 ```
 
 The sandbox runs the Vite dev server and loads `examples/codesandbox-demo.tsx`, which imports directly from this repository's local `src` folder:

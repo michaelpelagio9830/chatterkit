@@ -11,6 +11,35 @@ describe('ChatBox', () => {
     expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
   });
 
+  it('lets consumer root classes override default visual classes', () => {
+    render(
+      <ChatBox
+        mode="faq"
+        faqItems={[]}
+        title="Styled bot"
+        className="rounded-none border-0 bg-zinc-950 font-serif shadow-none"
+      />,
+    );
+
+    const root = screen.getByRole('region', { name: 'Styled bot' });
+
+    expect(root).toHaveClass(
+      'rounded-none',
+      'border-0',
+      'bg-zinc-950',
+      'font-serif',
+      'shadow-none',
+    );
+    expect(root).not.toHaveClass(
+      'ck-rounded-2xl',
+      'ck-border',
+      'ck-border-slate-200',
+      'ck-bg-slate-50',
+      'ck-font-sans',
+      'ck-shadow-lg',
+    );
+  });
+
   it('submits messages through the composer and displays FAQ responses', async () => {
     render(
       <ChatBox

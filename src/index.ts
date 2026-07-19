@@ -1,5 +1,3 @@
-import './style.css';
-
 export * from './components/ChatBot';
 export * from './components/ChatBotWidget';
 export * from './components/MessageInput';

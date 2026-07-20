@@ -11,13 +11,13 @@ export function MessageItem({ message, classNames }: MessageItemProps) {
   const isUser = message.role === 'user';
 
   return (
-    <li className={cn('flex', isUser ? 'justify-end' : 'justify-start', classNames?.message)}>
+    <li className={cn('ck-flex', isUser ? 'ck-justify-end' : 'ck-justify-start', classNames?.message)}>
       <div
         className={cn(
-          'max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-6 shadow-sm',
+          'ck-max-w-[80%] ck-rounded-2xl ck-px-3 ck-py-2 ck-text-sm ck-leading-6 ck-shadow-sm',
           isUser
-            ? 'rounded-br-sm bg-slate-900 text-white'
-            : 'rounded-bl-sm bg-white text-slate-900 ring-1 ring-slate-200',
+            ? 'ck-rounded-br-sm ck-bg-slate-900 ck-text-white'
+            : 'ck-rounded-bl-sm ck-bg-white ck-text-slate-900 ck-ring-1 ck-ring-slate-200',
           isUser ? classNames?.userMessage : classNames?.botMessage,
         )}
       >

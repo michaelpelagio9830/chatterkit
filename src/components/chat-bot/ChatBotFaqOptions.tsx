@@ -8,7 +8,7 @@ export function ChatBotFaqOptions({ children, className, label, ...containerProp
     useChatBotContext('ChatBox.FaqOptions');
   const resolvedLabel = label ?? faqOptionsLabel;
   const defaultButtonClassName = cn(
-    'shrink-0 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60',
+    'ck-shrink-0 ck-whitespace-nowrap ck-rounded-full ck-border ck-border-slate-200 ck-bg-slate-50 ck-px-3 ck-py-1.5 ck-text-xs ck-font-medium ck-text-slate-700 ck-transition hover:ck-border-slate-300 hover:ck-bg-slate-100 focus:ck-outline-none focus:ck-ring-2 focus:ck-ring-slate-300 disabled:ck-cursor-not-allowed disabled:ck-opacity-60',
     classNames?.faqOptionButton,
   );
 
@@ -19,10 +19,10 @@ export function ChatBotFaqOptions({ children, className, label, ...containerProp
   return (
     <div
       {...containerProps}
-      className={cn('border-t border-slate-200 bg-white px-4 py-3', classNames?.faqOptions, className)}
+      className={cn('ck-border-t ck-border-slate-200 ck-bg-white ck-px-4 ck-py-3', classNames?.faqOptions, className)}
     >
-      {label && <p className="mb-2 text-xs font-medium text-slate-500">{resolvedLabel}</p>}
-      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-color:theme(colors.slate.300)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
+      {label && <p className="ck-mb-2 ck-text-xs ck-font-medium ck-text-slate-500">{resolvedLabel}</p>}
+      <div className="ck-flex ck-gap-2 ck-overflow-x-auto ck-pb-1 ck-[scrollbar-color:theme(colors.slate.300)_transparent] ck-[scrollbar-width:thin] [&::-webkit-scrollbar]:ck-h-1.5 [&::-webkit-scrollbar-thumb]:ck-rounded-full [&::-webkit-scrollbar-thumb]:ck-bg-slate-300 [&::-webkit-scrollbar-track]:ck-bg-transparent">
         {faqItems.map((item, index) => {
           const submit = () => void submitMessage(item.question);
           const getButtonProps = ({ className: buttonClassName, onClick, disabled: buttonDisabled, ...buttonProps }: ChatBotFaqOptionButtonProps = {}) => ({

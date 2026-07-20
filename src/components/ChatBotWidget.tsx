@@ -113,7 +113,7 @@ function ChatBotWidgetRoot(props: ChatBotWidgetRootProps) {
     >
       <div
         className={cn(
-          "chatterkit-root fixed inset-0 z-50 pointer-events-none font-sans",
+          "chatterkit-root ck-fixed ck-inset-0 ck-z-50 ck-pointer-events-none ck-font-sans",
           className,
           widgetClassNames?.root,
         )}
@@ -157,9 +157,9 @@ function ChatBotWidgetLauncher({
       }}
       style={{ ...launcherStyle, ...style }}
       className={cn(
-        "pointer-events-auto fixed bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900 text-2xl text-white shadow-xl transition hover:scale-105 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2",
+        "ck-pointer-events-auto ck-fixed ck-bottom-6 ck-right-6 ck-flex ck-h-14 ck-w-14 ck-items-center ck-justify-center ck-rounded-full ck-bg-slate-900 ck-text-2xl ck-text-white ck-shadow-xl ck-transition hover:ck-scale-105 hover:ck-bg-slate-700 focus:ck-outline-none focus:ck-ring-2 focus:ck-ring-slate-400 focus:ck-ring-offset-2",
         draggable &&
-          "bottom-auto right-auto cursor-grab touch-none active:cursor-grabbing",
+          "ck-bottom-auto ck-right-auto ck-cursor-grab ck-touch-none active:ck-cursor-grabbing",
         widgetClassNames?.launcher,
         className,
       )}
@@ -188,8 +188,8 @@ function ChatBotWidgetPanel({
       {...divProps}
       style={{ ...panelStyle, ...style }}
       className={cn(
-        "chatbot-panel-enter pointer-events-auto fixed bottom-6 right-6 flex w-[min(calc(100vw-3rem),28rem)] flex-col items-end gap-2 will-change-transform",
-        draggable && "bottom-auto right-auto",
+        "chatbot-panel-enter ck-pointer-events-auto ck-fixed ck-bottom-6 ck-right-6 ck-flex ck-w-[min(calc(100vw-3rem),28rem)] ck-flex-col ck-items-end ck-gap-2 ck-will-change-transform",
+        draggable && "ck-bottom-auto ck-right-auto",
         widgetClassNames?.panel,
         className,
       )}
@@ -219,7 +219,7 @@ function ChatBotWidgetCloseButton({
         onClick?.(event);
       }}
       className={cn(
-        "rounded-full bg-slate-900 px-3 py-1 text-sm font-medium text-white shadow-lg transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2",
+        "ck-rounded-full ck-bg-slate-900 ck-px-3 ck-py-1 ck-text-sm ck-font-medium ck-text-white ck-shadow-lg ck-transition hover:ck-bg-slate-700 focus:ck-outline-none focus:ck-ring-2 focus:ck-ring-slate-400 focus:ck-ring-offset-2",
         widgetClassNames?.closeButton,
         className,
       )}
@@ -245,7 +245,7 @@ function ChatBotWidgetChatBot({
       chatbotState={chatBotState}
       draftState={draftState}
       className={cn(
-        "h-[min(32rem,calc(100vh-7rem))]",
+        "ck-h-[min(32rem,calc(100vh-7rem))]",
         widgetClassNames?.chatBot,
         chatBotProps.className,
         className,

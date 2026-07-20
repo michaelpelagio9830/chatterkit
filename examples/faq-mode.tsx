@@ -52,13 +52,13 @@ export function PersistentFaqSessionsExample() {
   const supportSession = useLocalChatSession('demo-support-faq');
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow">
-      <h2 className="text-xl font-semibold">Persistent FAQ sessions</h2>
-      <p className="mt-2 text-slate-600">
+    <section className="ck-rounded-2xl ck-bg-white ck-p-6 ck-shadow">
+      <h2 className="ck-text-xl ck-font-semibold">Persistent FAQ sessions</h2>
+      <p className="ck-mt-2 ck-text-slate-600">
         These chat boxes use separate local browser sessions. Refresh the page after chatting to see each
         conversation restored independently.
       </p>
-      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+      <div className="ck-mt-4 ck-grid ck-gap-4 lg:ck-grid-cols-2">
         <ChatBox.Root
           mode="faq"
           title="Billing FAQ Session"
@@ -69,14 +69,14 @@ export function PersistentFaqSessionsExample() {
           showFaqOptions
           faqOptionsLabel="Billing quick picks:"
           fallbackResponse="Billing does not know that yet. Please contact support."
-          className="h-[30rem] border-amber-100 shadow-xl"
+          className="ck-h-[30rem] ck-border-amber-100 ck-shadow-xl"
         >
-          <ChatBox.Header className="bg-amber-500 text-white" />
-          <ChatBox.Messages className="bg-amber-50" />
-          <ChatBox.FaqOptions className="border-amber-100 bg-amber-50/80" />
-          <ChatBox.Composer className="border-amber-100">
-            <ChatBox.Input className="focus:border-amber-500 focus:ring-amber-100" />
-            <ChatBox.SubmitButton className="bg-amber-500 hover:bg-amber-600">Send</ChatBox.SubmitButton>
+          <ChatBox.Header className="ck-bg-amber-500 ck-text-white" />
+          <ChatBox.Messages className="ck-bg-amber-50" />
+          <ChatBox.FaqOptions className="ck-border-amber-100 ck-bg-amber-50/80" />
+          <ChatBox.Composer className="ck-border-amber-100">
+            <ChatBox.Input className="focus:ck-border-amber-500 focus:ck-ring-amber-100" />
+            <ChatBox.SubmitButton className="ck-bg-amber-500 hover:ck-bg-amber-600">Send</ChatBox.SubmitButton>
           </ChatBox.Composer>
         </ChatBox.Root>
 
@@ -90,14 +90,14 @@ export function PersistentFaqSessionsExample() {
           showFaqOptions
           faqOptionsLabel="Support quick picks:"
           fallbackResponse="Support does not know that yet. Please contact support."
-          className="h-[30rem] border-teal-100 shadow-xl"
+          className="ck-h-[30rem] ck-border-teal-100 ck-shadow-xl"
         >
-          <ChatBox.Header className="bg-teal-600 text-white" />
-          <ChatBox.Messages className="bg-teal-50" />
-          <ChatBox.FaqOptions className="border-teal-100 bg-teal-50/80" />
-          <ChatBox.Composer className="border-teal-100">
-            <ChatBox.Input className="focus:border-teal-500 focus:ring-teal-100" />
-            <ChatBox.SubmitButton className="bg-teal-600 hover:bg-teal-700">Send</ChatBox.SubmitButton>
+          <ChatBox.Header className="ck-bg-teal-600 ck-text-white" />
+          <ChatBox.Messages className="ck-bg-teal-50" />
+          <ChatBox.FaqOptions className="ck-border-teal-100 ck-bg-teal-50/80" />
+          <ChatBox.Composer className="ck-border-teal-100">
+            <ChatBox.Input className="focus:ck-border-teal-500 focus:ck-ring-teal-100" />
+            <ChatBox.SubmitButton className="ck-bg-teal-600 hover:ck-bg-teal-700">Send</ChatBox.SubmitButton>
           </ChatBox.Composer>
         </ChatBox.Root>
       </div>

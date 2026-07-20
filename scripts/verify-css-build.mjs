@@ -3,11 +3,21 @@ import { resolve } from 'node:path';
 
 const stylesheetPath = resolve('dist/style.css');
 const css = readFileSync(stylesheetPath, 'utf8');
+const jsEntryPath = resolve('dist/index.js');
+const jsEntry = readFileSync(jsEntryPath, 'utf8');
 
 const forbiddenPreflightPatterns = [
   {
     name: 'Tailwind universal border reset',
     pattern: /\*,::before,::after[^{}]*\{[^{}]*(?:box-sizing:border-box|border-width:0|border-style:solid)/,
+  },
+  {
+    name: 'Tailwind global variable reset',
+    pattern: /(?:^|})(?:\*,(?:::before|:before|::after|:after)[^{]*|\*,(?:::after|:after),(?:::before|:before)[^{]*)\{[^{}]*--tw-(?:blur|shadow|ring-shadow|translate-x):/,
+  },
+  {
+    name: 'Tailwind global backdrop variable reset',
+    pattern: /(?:^|})::backdrop\{[^{}]*--tw-(?:blur|shadow|ring-shadow|backdrop-blur):/,
   },
   {
     name: 'Tailwind html reset',
@@ -22,6 +32,38 @@ const forbiddenPreflightPatterns = [
     pattern: /(?:^|})(?:button,input,optgroup,select,textarea|button,input)[^{}]*\{[^{}]*(?:font-family:inherit|font-feature-settings:inherit|font-size:100%)/,
   },
   {
+    name: 'Tailwind container component utility',
+    pattern: /(?:^|})\.(?:\\!)?container\{/,
+  },
+  {
+    name: 'unprefixed Tailwind flex utility',
+    pattern: /(?:^|})\.flex\{/,
+  },
+  {
+    name: 'unprefixed Tailwind fixed utility',
+    pattern: /(?:^|})\.fixed\{/,
+  },
+  {
+    name: 'unprefixed Tailwind grid utility',
+    pattern: /(?:^|})\.grid\{/,
+  },
+  {
+    name: 'unprefixed Tailwind hidden utility',
+    pattern: /(?:^|})\.hidden\{/,
+  },
+  {
+    name: 'unprefixed Tailwind bg-white utility',
+    pattern: /(?:^|})\.bg-white\{/,
+  },
+  {
+    name: 'unprefixed Tailwind text-sm utility',
+    pattern: /(?:^|})\.text-sm\{/,
+  },
+  {
+    name: 'unprefixed Tailwind rounded-full utility',
+    pattern: /(?:^|})\.rounded-full\{/,
+  },
+  {
     name: 'class-specific ChatterKit box-sizing reset',
     pattern: /\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*::before,\.chatterkit-root \*::after\{box-sizing:border-box\}/,
   },
@@ -34,11 +76,11 @@ const forbiddenPreflightPatterns = [
 const requiredChatterkitPatterns = [
   {
     name: 'cascade layer order declaration',
-    pattern: /@layer base,base\.chatterkit,components,components\.chatterkit,utilities;/,
+    pattern: /@layer base,\s*base\.chatterkit,\s*components,\s*components\.chatterkit,\s*utilities;/,
   },
   {
     name: 'base ChatterKit sublayer wrapping scoped reset output',
-    pattern: /@layer base\.chatterkit\{\s*:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*:{1,2}before,\.chatterkit-root \*:{1,2}after\)\{box-sizing:border-box\}/,
+    pattern: /@layer base\.chatterkit\{\s*:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root (?:\*)?:{1,2}before,\.chatterkit-root (?:\*)?:{1,2}after\)\{[^{}]*box-sizing:border-box/,
   },
   {
     name: 'components ChatterKit sublayer wrapping ChatterKit helpers',
@@ -46,7 +88,11 @@ const requiredChatterkitPatterns = [
   },
   {
     name: 'zero-specificity scoped box-sizing reset',
-    pattern: /:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root \*:{1,2}before,\.chatterkit-root \*:{1,2}after\)\{box-sizing:border-box\}/,
+    pattern: /:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root (?:\*)?:{1,2}before,\.chatterkit-root (?:\*)?:{1,2}after\)\{[^{}]*box-sizing:border-box/,
+  },
+  {
+    name: 'scoped Tailwind variable defaults',
+    pattern: /:where\(\.chatterkit-root,\.chatterkit-root \*,\.chatterkit-root (?:\*)?:{1,2}before,\.chatterkit-root (?:\*)?:{1,2}after\)\{[^{}]*--tw-blur:/,
   },
   {
     name: 'zero-specificity scoped margin reset',
@@ -57,12 +103,12 @@ const requiredChatterkitPatterns = [
     pattern: /:where\(\.chatterkit-root button,\.chatterkit-root input,\.chatterkit-root textarea,\.chatterkit-root select\)\{font:inherit\}/,
   },
   {
-    name: 'component flex utility output',
-    pattern: /\.flex\{display:flex\}/,
+    name: 'prefixed component flex utility output',
+    pattern: /\.ck-flex\{display:flex\}/,
   },
   {
-    name: 'component rounded utility output',
-    pattern: /\.rounded-(?:2xl|3xl|full)\{/,
+    name: 'prefixed component rounded utility output',
+    pattern: /\.ck-rounded-(?:2xl|3xl|full)\{/,
   },
   {
     name: 'chatbot panel animation helper',
@@ -71,6 +117,13 @@ const requiredChatterkitPatterns = [
   {
     name: 'chatbot typing dot helper',
     pattern: /\.chatbot-typing-dot\{[^{}]*animation:chatbot-typing-bounce/,
+  },
+];
+
+const forbiddenJsEntryPatterns = [
+  {
+    name: 'automatic package stylesheet import from JS entry',
+    pattern: /style\.css/,
   },
 ];
 
@@ -85,6 +138,12 @@ for (const check of forbiddenPreflightPatterns) {
 for (const check of requiredChatterkitPatterns) {
   if (!check.pattern.test(css)) {
     failures.push(`Missing expected Chatterkit CSS output: ${check.name}`);
+  }
+}
+
+for (const check of forbiddenJsEntryPatterns) {
+  if (check.pattern.test(jsEntry)) {
+    failures.push(`Found forbidden JS entry behavior in ${jsEntryPath}: ${check.name}`);
   }
 }
 

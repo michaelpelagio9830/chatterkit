@@ -94,18 +94,18 @@ export function ChatBotMessages({ children, className, newMessageIndicator, ...c
     <ul
       {...(containerProps as HTMLAttributes<HTMLUListElement>)}
       ref={listRef}
-      className={cn('flex flex-1 flex-col gap-3 overflow-y-auto p-4', classNames?.messages, className)}
+      className={cn('ck-flex ck-flex-1 ck-flex-col ck-gap-3 ck-overflow-y-auto ck-p-4', classNames?.messages, className)}
     >
       {messages.map((message) =>
         children ? <Fragment key={message.id}>{children(message)}</Fragment> : <ChatBotMessageItem key={message.id} message={message} />,
       )}
       {unreadCount > 0 && (
-        <li className="sticky bottom-0 z-10 flex justify-center" aria-live="polite">
+        <li className="ck-sticky ck-bottom-0 ck-z-10 ck-flex ck-justify-center" aria-live="polite">
           {resolvedNewMessageIndicator ?? (
             <button
               type="button"
               className={cn(
-                'rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white shadow-lg transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2',
+                'ck-rounded-full ck-bg-slate-900 ck-px-3 ck-py-1 ck-text-xs ck-font-medium ck-text-white ck-shadow-lg ck-transition hover:ck-bg-slate-700 focus:ck-outline-none focus:ck-ring-2 focus:ck-ring-slate-400 focus:ck-ring-offset-2',
                 classNames?.newMessageIndicator,
               )}
               onClick={scrollToBottom}
@@ -115,7 +115,7 @@ export function ChatBotMessages({ children, className, newMessageIndicator, ...c
           )}
         </li>
       )}
-      <li ref={endRef} aria-hidden="true" className="h-px shrink-0" />
+      <li ref={endRef} aria-hidden="true" className="ck-h-px ck-shrink-0" />
     </ul>
   );
 }

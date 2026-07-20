@@ -6,7 +6,7 @@ export function ChatBotHeader({ children, className, ...headerProps }: ChatBotHe
   const { classNames } = useChatBotContext('ChatBox.Header');
 
   return (
-    <header {...headerProps} className={cn('border-b border-slate-200 bg-white px-4 py-3', classNames?.header, className)}>
+    <header {...headerProps} className={cn('ck-border-b ck-border-slate-200 ck-bg-white ck-px-4 ck-py-3', classNames?.header, className)}>
       {children ?? <ChatBotTitle />}
     </header>
   );
@@ -16,7 +16,7 @@ export function ChatBotTitle({ children, className, ...titleProps }: ChatBotTitl
   const { title, classNames } = useChatBotContext('ChatBox.Title');
 
   return (
-    <h2 {...titleProps} className={cn('text-base font-semibold text-slate-900', classNames?.title, className)}>
+    <h2 {...titleProps} className={cn('ck-text-base ck-font-semibold ck-text-slate-900', classNames?.title, className)}>
       {children ?? title}
     </h2>
   );

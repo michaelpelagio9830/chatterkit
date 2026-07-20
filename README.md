@@ -20,7 +20,7 @@ Chatterkit currently supports:
 - **Composable UI slots** for custom headers, message lists, FAQ buttons, state views, and composers.
 - **Safe markdown chat bubbles** with GFM support, autolinks, and external-link protections.
 - **Session helpers** for externally owned message history and browser storage persistence.
-- **No-preflight package CSS** so host applications can import Chatterkit styles without Tailwind global reset side effects.
+- **Opt-in no-preflight package CSS** so host applications control when Chatterkit styles are loaded without Tailwind global reset side effects.
 
 The recommended stack is **React + TypeScript + Tailwind CSS + Vite + Vitest**.
 
@@ -47,14 +47,14 @@ Use this local-source sandbox while iterating on unreleased changes. After publi
 npm install chatterkit
 ```
 
-Import the component and package CSS:
+Import the component and package CSS explicitly:
 
 ```tsx
 import { ChatBox, ChatBoxWidget } from 'chatterkit';
 import 'chatterkit/style.css';
 ```
 
-The package stylesheet is built without Tailwind preflight/global reset output, so importing `chatterkit/style.css` avoids applying Tailwind's page-level resets to host applications.
+Chatterkit does not auto-load CSS from its JavaScript entry. Import `chatterkit/style.css` once in your app when you want the default theme. The package stylesheet is built without Tailwind preflight/global reset output, so importing it avoids applying Tailwind's page-level resets to host applications.
 
 ## Markdown chat bubbles
 
@@ -470,7 +470,7 @@ The package also exports `serializeChatMessages` and `deserializeChatMessages` f
 
 ## Tailwind setup
 
-The package ships default Tailwind-generated CSS through `chatterkit/style.css`. This stylesheet is a no-preflight package stylesheet: it includes Chatterkit component utilities and Chatterkit-owned animation helpers, but intentionally excludes Tailwind preflight/global reset rules that would target host app elements such as `html`, `body`, `button`, or `input`.
+The package ships default Tailwind-generated CSS through `chatterkit/style.css`. This stylesheet is opt-in: importing from `chatterkit` only loads JavaScript, while `import 'chatterkit/style.css'` loads the default theme. The stylesheet is a no-preflight package stylesheet: it includes Chatterkit component utilities and Chatterkit-owned animation helpers, but intentionally excludes Tailwind preflight/global reset rules that would target host app elements such as `html`, `body`, `button`, or `input`.
 
 If you want to override styles with your own Tailwind classes, include your app and chatbot usage files in your Tailwind `content` configuration:
 
@@ -486,9 +486,10 @@ The component also accepts `className` and `classNames` props for targeted styli
 
 Chatterkit is a component library, so package CSS should remain safe to import into existing applications:
 
-- Keep Tailwind preflight disabled in `tailwind.config.ts` and do not add `@tailwind base` to `src/style.css`.
+- Keep Tailwind preflight disabled in `tailwind.config.ts`; `@tailwind base` is allowed only for Tailwind's CSS variable initialization, not preflight resets.
 - Limit custom CSS to Chatterkit-owned selectors, such as the existing `chatbot-` animation helper classes.
 - Avoid unscoped global element selectors in package CSS.
+- Do not import `src/style.css` from `src/index.ts`; package CSS must remain opt-in through `chatterkit/style.css`.
 - Run `npm run build && npm run verify:css` before changing styling build behavior.
 
 ## Publishing to npm

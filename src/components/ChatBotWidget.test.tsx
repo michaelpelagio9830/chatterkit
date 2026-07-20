@@ -86,10 +86,10 @@ describe("ChatBotWidget", () => {
 
     expect(launcher).toBeInTheDocument();
     expect(launcher).toHaveClass(
-      "fixed",
-      "bottom-6",
-      "right-6",
-      "rounded-full",
+      "ck-fixed",
+      "ck-bottom-6",
+      "ck-right-6",
+      "ck-rounded-full",
     );
     expect(
       screen.queryByRole("region", { name: "Support bot" }),

@@ -13,7 +13,7 @@ export function ChatBotComposer({ children, className, onSubmit, ...formProps }:
   };
 
   return (
-    <form {...formProps} className={cn('flex gap-2 border-t border-slate-200 bg-white p-3', classNames?.composer, className)} onSubmit={handleSubmit}>
+    <form {...formProps} className={cn('ck-flex ck-gap-2 ck-border-t ck-border-slate-200 ck-bg-white ck-p-3', classNames?.composer, className)} onSubmit={handleSubmit}>
       {children ?? (
         <>
           <ChatBotInput />
@@ -29,14 +29,14 @@ export function ChatBotInput({ className, id = 'chatbot-message-input', placehol
 
   return (
     <>
-      <label className="sr-only" htmlFor={id}>
+      <label className="ck-sr-only" htmlFor={id}>
         Message
       </label>
       <input
         {...inputProps}
         id={id}
         className={cn(
-          'appearance-none min-w-0 flex-1 rounded-xl border bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 focus:ring-1 focus:ring-slate-300 disabled:cursor-not-allowed disabled:bg-slate-100',
+          'ck-appearance-none ck-min-w-0 ck-flex-1 ck-rounded-xl ck-border ck-bg-white ck-px-3 ck-py-2 ck-text-sm ck-text-slate-900 ck-outline-none ck-transition focus:ck-border-slate-500 focus:ck-ring-1 focus:ck-ring-slate-300 disabled:ck-cursor-not-allowed disabled:ck-bg-slate-100',
           classNames?.input,
           className,
         )}
@@ -57,7 +57,7 @@ export function ChatBotSubmitButton({ children, className, disabled, ...buttonPr
     <button
       {...buttonProps}
       className={cn(
-        'rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400',
+        'ck-rounded-xl ck-bg-slate-900 ck-px-4 ck-py-2 ck-text-sm ck-font-medium ck-text-white ck-transition hover:ck-bg-slate-700 disabled:ck-cursor-not-allowed disabled:ck-bg-slate-400',
         classNames?.sendButton,
         className,
       )}

@@ -9,6 +9,7 @@ const isLibraryBuild = process.env.CHATTERKIT_LIBRARY_BUILD === 'true';
 console.log('isLibraryBuild:', isLibraryBuild);
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}', './examples/**/*.{ts,tsx}'],
+  prefix: 'ck-',
   corePlugins: {
     preflight: !isLibraryBuild,
   },

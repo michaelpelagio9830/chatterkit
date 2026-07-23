@@ -12,8 +12,11 @@ export function ChatBotEmpty({ children, className, ...divProps }: ChatBotStateP
   }
 
   return (
-    <div {...divProps} className={cn('ck-flex ck-flex-1 ck-items-center ck-justify-center ck-p-6 ck-text-sm ck-text-slate-500', classNames?.empty, className)}>
+    <div {...divProps} className={cn('ck-flex ck-flex-1 ck-items-center ck-justify-center ck-p-6 ck-text-sm ck-text-slate-500 ck-relative  ck-h-[stretch]', classNames?.empty, className)}>
+      <div className='ck-relative'>
+
       {children ?? emptyState ?? 'No messages yet. Start the conversation below.'}
+      </div>
     </div>
   );
 }

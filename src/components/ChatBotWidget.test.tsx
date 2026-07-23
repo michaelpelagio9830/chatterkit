@@ -247,6 +247,29 @@ describe("ChatBotWidget", () => {
     );
   });
 
+  it("lets consumer height classes override the default widget chatbot height", () => {
+    render(
+      <ChatBotWidget.Root
+        mode="faq"
+        faqItems={[]}
+        title="Custom height support"
+        defaultOpen
+      >
+        <ChatBotWidget.Panel>
+          <ChatBotWidget.ChatBot className="h-[38rem]" />
+        </ChatBotWidget.Panel>
+        <ChatBotWidget.Launcher />
+      </ChatBotWidget.Root>,
+    );
+
+    const chatBot = screen.getByRole("region", {
+      name: "Custom height support",
+    });
+
+    expect(chatBot).toHaveClass("h-[38rem]");
+    expect(chatBot).not.toHaveClass("ck-h-[min(32rem,calc(100vh-7rem))]");
+  });
+
   it("bridges widget mode props into custom ChatBot children", async () => {
     render(
       <ChatBotWidget.Root

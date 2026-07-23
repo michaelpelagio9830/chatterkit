@@ -48,6 +48,25 @@ const ChatBotWidgetContext = createContext<ChatBotWidgetContextValue | null>(
   null,
 );
 
+function getUtilityName(classToken: string) {
+  return classToken.trim().replace(/^!/, "").split(":").pop() ?? "";
+}
+
+function hasUtilityOverride(
+  classNames: Array<string | undefined>,
+  utilityPrefixes: string[],
+) {
+  return classNames
+    .flatMap((className) => className?.split(/\s+/) ?? [])
+    .some((classToken) => {
+      const utilityName = getUtilityName(classToken);
+
+      return utilityPrefixes.some(
+        (prefix) => utilityName === prefix || utilityName.startsWith(`${prefix}-`),
+      );
+    });
+}
+
 function useChatBotWidgetContext(componentName: string) {
   const context = useContext(ChatBotWidgetContext);
 
@@ -237,6 +256,19 @@ function ChatBotWidgetChatBot({
 }: ChatBotWidgetChatBotProps) {
   const { chatBotProps, chatBotState, draftState, widgetClassNames } =
     useChatBotWidgetContext("ChatBotWidget.ChatBot");
+  const classOverrideSources = [
+    widgetClassNames?.chatBot,
+    chatBotProps.className,
+    className,
+  ];
+  const hasHeightOverride = hasUtilityOverride(classOverrideSources, [
+    "h",
+    "ck-h",
+    "min-h",
+    "ck-min-h",
+    "max-h",
+    "ck-max-h",
+  ]);
 
   return (
     <ChatBotRoot
@@ -245,7 +277,7 @@ function ChatBotWidgetChatBot({
       chatbotState={chatBotState}
       draftState={draftState}
       className={cn(
-        "ck-h-[min(32rem,calc(100vh-7rem))]",
+        !hasHeightOverride && "ck-h-[min(32rem,calc(100vh-7rem))]",
         widgetClassNames?.chatBot,
         chatBotProps.className,
         className,
